@@ -1,0 +1,29 @@
+#home {
+    background-image: url('../img/img-home.jpg');
+    width: 100%;
+    height: 99vh;
+    background-size: cover;
+}
+
+    #home .container {
+        align-items: center;
+    }
+
+    .home-text {
+        width: 450px;
+        height: 240px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .home-text span {
+        color: #00CE3A;
+    }
+
+    .home-text .primary-btn {
+        width: 255px;
+        height: 40px;
+        z-index: 2;
+    }
