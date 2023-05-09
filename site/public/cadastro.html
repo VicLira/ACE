@@ -59,7 +59,7 @@
                     </div>
                     <div class="campo">
                         <span>Data de nascimento:</span>
-                        <input id="dtNasc_input" type="date" >
+                        <input id="dtNasc_input" type="date">
                     </div>
                     <button class="botao" onclick="cadastrar()">Cadastrar</button>
 
@@ -97,11 +97,16 @@
         var emailVar = email_input.value;
         var senhaVar = senha_input.value;
         var confirmacaoSenhaVar = confirmacao_senha_input.value;
-        var telefone = telefone_input.value;
-        var dtNasc = dtNasc_input.value;
+        var telefoneVar = telefone_input.value;
+        var dtNascVar = dtNasc_input.value;
 
 
-        if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "") {
+        if (nomeVar == "" ||
+            emailVar == "" ||
+            senhaVar == "" ||
+            confirmacaoSenhaVar == "" ||
+            telefoneVar == "" ||
+            dtNascVar == "") {
             cardErro.style.display = "block"
             mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
 
@@ -123,7 +128,9 @@
                 // Agora vá para o arquivo routes/usuario.js
                 nomeServer: nomeVar,
                 emailServer: emailVar,
-                senhaServer: senhaVar
+                senhaServer: senhaVar,        
+                telefoneServer: telefoneVar,
+                dtNascServer: dtNascVar
             })
         }).then(function (resposta) {
 
