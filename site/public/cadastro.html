@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AquaTech | Cadastro</title>
+    <title>ACE | Cadastro</title>
 
 
     <script src="./js/funcoes.js"></script>
@@ -21,31 +21,6 @@
 </head>
 
 <body>
-
-    <!--header inicio-->
-    <div class="header">
-        <div class="container">
-            <h1 class="titulo">AquaTech</h1>
-            <ul class="navbar">
-                <li>
-                    <a href="index.html">Inicial</a>
-                </li>
-                <li>
-                    <a href="simulador.html">Simulador</a>
-                </li>
-                <li>|</li>
-                <li>
-                    <a href="login.html">Login</a>
-                </li>
-                <li class="agora">
-                    <a href="#">Cadastro</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!--header fim-->
-
-
     <div class="login">
         <div class="alerta_erro">
             <div class="card_erro" id="cardErro">
@@ -77,6 +52,14 @@
                     <div class="campo">
                         <span>Confirmação da Senha:</span>
                         <input id="confirmacao_senha_input" type="password" placeholder="******">
+                    </div>
+                    <div class="campo">
+                        <span>telefone:</span>
+                        <input id="telefone_input" type="text" placeholder="11999999999">
+                    </div>
+                    <div class="campo">
+                        <span>Data de nascimento:</span>
+                        <input id="dtNasc_input" type="date" >
                     </div>
                     <button class="botao" onclick="cadastrar()">Cadastrar</button>
 
@@ -114,6 +97,9 @@
         var emailVar = email_input.value;
         var senhaVar = senha_input.value;
         var confirmacaoSenhaVar = confirmacao_senha_input.value;
+        var telefone = telefone_input.value;
+        var dtNasc = dtNasc_input.value;
+
 
         if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "") {
             cardErro.style.display = "block"
