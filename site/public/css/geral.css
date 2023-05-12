@@ -123,6 +123,33 @@
     cursor: pointer;
 }
 
+.secondary-btn {
+    width: 100%;
+    max-width: 300px;
+
+    background: #00CE3A;
+    border-radius: 10px;
+
+    border: none;
+    padding: 10px;
+
+    font-family: Krona One;
+    font-size: 16px;
+    color: #fff;
+
+    cursor: pointer;
+}
+
+.switch-btn-group {
+    align-self: flex-end;
+}
+
+    .switch-btn {
+        color: #fff;
+        font-family: 'Krona One';
+        text-decoration: none;
+    }
+
 .search-wrapper {
     width: 200px;
     height: 40px;
