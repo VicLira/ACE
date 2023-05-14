@@ -142,12 +142,47 @@
 
 .switch-btn-group {
     align-self: flex-end;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
     .switch-btn {
         color: #fff;
         font-family: 'Krona One';
-        text-decoration: none;
+        font-size: 12px;
+        text-decoration: none;  
+
+        background-color: #00CE3A;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .switch-btn.now {
+        background-color: #00A42E;
+    }
+
+.btn-voltar {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(217, 217, 217, 0.2);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+}
+
+    .btn-voltar #icon {
+        width: 100%;
+        height: 100%;
     }
 
 .search-wrapper {
