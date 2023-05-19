@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ACE | Simulador</title>
+
+  <script src="./js/funcoes.js"></script>
+
+  <link rel="stylesheet" href="./perfil.css">
+
+  <link rel="icon" href="../assets/icon/favicon2.ico">
+  <link rel="stylesheet" href="../css/navigations.css">
+
+  <link rel="stylesheet" href="../css/geral.css">
+
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <aside>
+    <div class="sidebar">
+      <div class="container">
+        <div class="side-nav">
+          <div class="side-item"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <section id="perfil">
+    <div class="banner-perfil">
+
+    </div>
+    <div class="container">
+      <div class="col">
+        <div class="perfil">
+          <img src="../assets/user-img-default.png" alt="">
+          <p class="secondary-title">User XPTO</p>
+
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="chart">
+            <canvas id="mixedChart"></canvas>
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="chart">
+            <canvas id="lineChart"></canvas>
+          </div>
+          <div class="col interaction" style="margin: 0;">
+            <div class="nInteraction">
+              <h2 class="secondary-title">N curtidas</h2>
+            </div>
+            <div class="nInteraction">
+              <h2 class="secondary-title">N salvos</h2>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
+
+<script>
+
+  // Dados do gráfico Mixed
+  var data = {
+    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'],
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Vendas',
+        data: [50, 75, 80, 65, 70],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de preenchimento das barras
+        borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda das barras
+        borderWidth: 1
+      },
+      {
+        type: 'line',
+        label: 'Receita',
+        data: [100, 125, 110, 135, 120],
+        fill: false,
+        borderColor: 'rgba(192, 75, 192, 1)', // Cor da linha
+        borderWidth: 2
+      }
+    ]
+  };
+
+  // Configurações do gráfico Mixed
+  var options = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+
+  // Renderizar o gráfico Mixed
+  var mixedChart = document.getElementById('mixedChart').getContext('2d');
+  new Chart(mixedChart, {
+    type: 'bar',
+    data: data,
+    options: options
+  });
+
+  // Dados do gráfico line
+  var data = {
+    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'],
+    datasets: [
+      {
+        type: 'line',
+        label: 'Vendas',
+        data: [50, 75, 80, 65, 70],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de preenchimento das lineras
+        borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda das lineras
+        borderWidth: 1
+      },
+      {
+        type: 'line',
+        label: 'Receita',
+        data: [100, 125, 110, 135, 120],
+        fill: false,
+        borderColor: 'rgba(192, 75, 192, 1)', // Cor da linha
+        borderWidth: 2
+      }
+    ]
+  };
+
+  // Configurações do gráfico Line
+  var options = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+
+  // Renderizar o gráfico Line
+  var lineChart = document.getElementById('lineChart').getContext('2d');
+  new Chart(lineChart, {
+    type: 'line',
+    data: data,
+    options: options
+  });
+</script>
