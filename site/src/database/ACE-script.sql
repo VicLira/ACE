@@ -55,6 +55,8 @@ CREATE TABLE Jogo (
     descJogo TEXT,
     banner LONGTEXT,
     dtCriacao DATE,
+    statusJogo TINYINT,
+		CONSTRAINT chkStatusJogo CHECK(statusJogo IN(0, 1)),
     tamanhoJogo INT,
     qtdCurtida INT,
     qtdSalvo INT,
