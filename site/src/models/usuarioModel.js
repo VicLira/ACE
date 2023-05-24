@@ -1,4 +1,4 @@
-var database = require("../database/config")
+var database = require("../database/config.js")
 
 function listar() {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listar()");
@@ -22,14 +22,37 @@ function entrar(email, senha) {
 function cadastrar(nome, email, senha, telefone, dtNasc) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha);
     
-    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
-    //  e na ordem de inserção dos dados.
-    var instrucao = `
-        INSERT INTO usuario (nome, email, senha, telefone, dtNasc, fkTipoUsuario) VALUES ('${nome}', '${email}', '${senha}', '${telefone}', '${dtNasc}', '2');
+    var instrucaoUsuario = `
+        INSERT INTO usuario (nome, email, senha, telefone, dtNasc, fkTipoUsuario) VALUES ('${nome}', '${email}', '${senha}', '${telefone}', '${dtNasc}', 2);
     `;
-    console.log("Executando a instrução SQL: \n" + instrucao);
-    return database.executar(instrucao);
+
+    console.log("Executando a instrução SQL na tabela usuario: \n" + instrucaoUsuario);
+
+    return database.executar(instrucaoUsuario)
+        .then(() => {
+            var instrucaoObterIdUsuario = `
+                SELECT idUsuario FROM usuario WHERE email = '${email}';
+            `;
+
+            console.log("Executando a instrução SQL para obter o ID do usuário: \n" + instrucaoObterIdUsuario);
+
+            return database.executar(instrucaoObterIdUsuario);
+        })
+        .then((resultados) => {
+            var idUsuario = resultados[0].idUsuario;
+
+            var instrucaoColaborador = `
+                INSERT INTO colaborador (fkUsuario) VALUES (${idUsuario});
+            `;
+
+            console.log("Executando a instrução SQL na tabela colaborador: \n" + instrucaoColaborador);
+
+            return database.executar(instrucaoColaborador);
+        });
 }
+
+
+
 
 module.exports = {
     entrar,
