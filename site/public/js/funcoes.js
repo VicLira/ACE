@@ -1,16 +1,23 @@
 // sessão
-function validarSessao() {
+function validarSessao(tipoUsuarioPermitido) {
     // aguardar();
 
     var email = sessionStorage.EMAIL_USUARIO;
     var nome = sessionStorage.NOME_USUARIO;
+    var tipoUsuario = sessionStorage.TIPO_USUARIO;
 
     // var b_usuario = document.getElementById("b_usuario");
 
     if (email != null && nome != null) {
         // window.alert(`Seja bem-vindo, ${nome}!`);
         // b_usuario.innerHTML = nome;
-
+        if (tipoUsuario <= tipoUsuarioPermitido) {
+            // Tipo de usuário é igual ao tipo de usuário permitido, permitir o acesso à tela
+            // Aguarde ou execute outras ações necessárias
+        } else {
+            // Tipo de usuário não é permitido, redirecionar para uma página de acesso negado ou fazer outra ação apropriada
+            window.location = "../acesso-negado.html";
+        }
         // finalizarAguardar();
     } else {
         window.location = "../login.html";

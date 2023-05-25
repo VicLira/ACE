@@ -1,0 +1,121 @@
+#post {
+    background: #292929;
+    width: 100%;
+    height: 100vh;
+}
+
+    #post .container {
+        height: 100%;
+    }
+
+    #post .col {
+        width: 50%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .posts-wrapper {
+        width: 90%;
+        height: 100%;
+        max-height: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 5px;
+    }
+
+.post-img-wrapper {
+    width: 100%;
+    height: 390px;
+    background-color: #ADADAD;
+    position: relative;
+    border-radius: 10px;
+}
+
+.post-img-wrapper.jogo {
+    width: 100%;
+    max-width: 270px;
+}
+
+.post-img-wrapper.noticia {
+    width: 100%;
+    height: 390px;
+}
+
+    .post-img-wrapper img {
+        width: 100%;
+        max-height: 100%;
+        background-size: cover;
+    }
+
+.form-post-wrapper {
+    width: 90%;
+    height: 100%;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+
+.form-post {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+    .form-post input, select, textarea{
+        max-width: 100%;
+        max-height: 200px;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #ADADAD;
+        font-family: 'Krona One';
+        color: #fff;
+        font-size: 18px;
+        outline: none;
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    .form-post option {
+        background-color: #292929;
+        border: none;
+        outline: none;
+        font-size: 16px;
+    }
+
+    .form-post input:focus, select:focus{
+        background-color: none;
+        outline: none;
+    }
+
+    .custom-file-input {
+        position: absolute;
+        z-index: 3;
+        bottom: 5%;
+        right: 5%;
+    }
+
+      .input-file {
+        width: 100%;
+        position: absolute;
+        opacity: 0;
+
+        cursor: pointer;
+      }
+      
+      #bannerJogoLabel {
+        border-radius: 100px;
+        padding: 15px;
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        color: #000;
+        font-family: 'Krona One';
+        font-size: 18px;
+      }
+      
