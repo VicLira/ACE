@@ -32,39 +32,39 @@
 
   <section id="post">
     <div class="container">
-        <div class="col">
-            <div class="post-img-wrapper" id="post-img-wrapper">
-                <div class="custom-file-input">
-                    <input type="file" id="bannerJogo" name="bannerJogo" class="input-file" />
-                    <label for="bannerJogo" id="bannerJogoLabel">+</label>
-                  </div>
+      <div class="col">
+        <div class="post-img-wrapper" id="post-img-wrapper">
+          <div class="custom-file-input">
+            <input type="file" id="bannerJogo" name="bannerJogo" class="input-file" />
+            <label for="bannerJogo" id="bannerJogoLabel">+</label>
+          </div>
 
-                </button>
-            </div>
+          </button>
         </div>
-        <div class="col">
-            <div class="form-post-wrapper">
-                <div class="form-post">
-                    <input name="nomeJogo" id="nomeJogo" type="text" placeholder="Nome do jogo"/>
-                    <textarea id="descJogo" name="descJogo" maxlength="500" placeholder="Descrição do jogo"></textarea>
-                    <input name="tamanhoJogo" id="tamanhoJogo" type="number" placeholder="Tamanho do jogo"/>
-                    <select name="categoriaJogo" id="categoriaJogo">
-                        <option value="" disabled selected>Selecione uma categoria</option>
-                        <option value="1">Ação</option>
-                        <option value="2" >Aventura</option>
-                        <option value="3">Estratégia</option>
-                        <option value="4">Plataforma</option>
-                        <option value="5">Quebra-cabeça</option>
-                        <option value="6">RPG</option>
-                        <option value="7">Simulação</option>
-                        <option value="8">Terror</option>
-                    </select>
-                </div>
-                
-                <button class="secondary-btn" onclick="enviar()">Enviar</button>
-            </div>
-            
+      </div>
+      <div class="col">
+        <div class="form-post-wrapper">
+          <div class="form-post">
+            <input name="nomeJogo" id="nomeJogo" type="text" placeholder="Nome do jogo" />
+            <textarea id="descJogo" name="descJogo" maxlength="500" placeholder="Descrição do jogo"></textarea>
+            <input name="tamanhoJogo" id="tamanhoJogo" type="number" placeholder="Tamanho do jogo" />
+            <select name="categoriaJogo" id="categoriaJogo">
+              <option value="" disabled selected>Selecione uma categoria</option>
+              <option value="1">Ação</option>
+              <option value="2">Aventura</option>
+              <option value="3">Estratégia</option>
+              <option value="4">Plataforma</option>
+              <option value="5">Quebra-cabeça</option>
+              <option value="6">RPG</option>
+              <option value="7">Simulação</option>
+              <option value="8">Terror</option>
+            </select>
+          </div>
+
+          <button class="secondary-btn" onclick="enviar()">Enviar</button>
         </div>
+
+      </div>
     </div>
   </section>
 </body>
@@ -72,49 +72,134 @@
 </html>
 
 <script>
-    validarSessao(2)
+  validarSessao(2)
 
-    var bannerJogo = document.getElementById('bannerJogo');
-    var bannerJogoLabel = document.getElementById('bannerJogoLabel');
-    var bannerImgWrapper = document.getElementById('post-img-wrapper');
+  var bannerJogo = document.getElementById('bannerJogo');
+  var bannerJogoLabel = document.getElementById('bannerJogoLabel');
+  var bannerImgWrapper = document.getElementById('post-img-wrapper');
 
-    bannerJogo.addEventListener('change', function() {
-        if (bannerJogo.files.length > 0) {
-            var img = bannerJogo.files[0];
-            bannerJogoLabel.textContent = bannerJogo.files[0].name;
+  bannerJogo.addEventListener('change', function () {
+    if (bannerJogo.files.length > 0) {
+      var img = bannerJogo.files[0];
+      bannerJogoLabel.textContent = bannerJogo.files[0].name;
 
-            var reader = new FileReader();
+      var reader = new FileReader();
 
-            reader.onload = function(e) {
-                bannerImgWrapper.innerHTML += `<img src="${e.target.result}" alt="Imagem do jogo">`;
-            };
+      reader.onload = function (e) {
+        bannerImgWrapper.innerHTML += `<img src="${e.target.result}" alt="Imagem do jogo">`;
+      };
 
-            reader.readAsDataURL(img);
-        } else {
-            bannerJogoLabel.textContent = '+';
-        }
-    });
-
-    function enviar() {
-      const formData = new FormData();
-      formData.append('bannerJogo', bannerJogo.files[0])
-      formData.append('nomeJogo', nomeJogo.value)
-      formData.append('descJogo', descJogo.value)
-      formData.append('tamanhoJogo', tamanhoJogo.value)
-      formData.append('categoriaJogo', categoriaJogo.value)
-      formData.append('idUsuario', sessionStorage.ID_USUARIO)
-
-      console.log(sessionStorage.ID_USUARIO);
-
-      fetch("/jogos/enviar", {
-        method: "POST",
-        body: formData
-      })
-        .then(res => {
-          // window.location = "../dashboard/perfil.html"
-        })
-        .catch(err => {
-          console.log(err);
-        })
+      reader.readAsDataURL(img);
+    } else {
+      bannerJogoLabel.textContent = '+';
     }
+  });
+
+  var bannerJogoFileVar = bannerJogo.files[0];
+  var nomeJogoVar = nomeJogo.value;
+  var descJogoVar = descJogo.value;
+  var tamanhoJogoVar = tamanhoJogo.value;
+  var categoriaJogoVar = categoriaJogo.value;
+  var idUsuarioVar = sessionStorage.ID_USUARIO;
+
+  function enviar() {
+    const formData = new FormData();
+    formData.append('bannerJogo', bannerJogoFileVar)
+    formData.append('nomeJogo', nomeJogoVar)
+    formData.append('descJogo', descJogoVar)
+    formData.append('tamanhoJogo', tamanhoJogoVar)
+    formData.append('categoriaJogo', categoriaJogoVar)
+    formData.append('idUsuario', idUsuarioVar)
+
+    console.log(sessionStorage.ID_USUARIO);
+
+    fetch("/jogos/enviar", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => {
+        buscarJogo();
+        window.location = "../aprovacao.html"
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  function buscarJogo() {
+        aguardar();
+
+        fetch("/jogos/buscar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.idUsuario;
+                    sessionStorage.TIPO_USUARIO = json.fkTipoUsuario;
+
+                    setTimeout(function () {
+                        window.location = "./dashboard/perfil.html";
+                    }, 1000); // apenas para exibir o loading
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    finalizarAguardar(texto);
+                });
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+    }
+
+  function verificarStatusJogo() {
+    // Fazer uma solicitação AJAX para obter o status do jogo
+    // Você pode usar a função fetch() ou outras bibliotecas como o axios
+    fetch('/status-jogo/id=')
+      .then(response => response.json())
+      .then(data => {
+        // Verificar o status do jogo retornado pela resposta
+        const status = data.status;
+
+        // Atualizar a interface do usuário com base no status do jogo
+        if (status === 'approved') {
+          // Atualizar a tela para refletir o jogo aprovado
+          // Por exemplo, mostrar uma mensagem ou atualizar a lista de jogos
+        } else {
+          // O jogo ainda está em espera, você pode não fazer nada ou atualizar a tela de acordo
+        }
+      })
+      .catch(error => {
+        // Lidar com erros, se houver
+        console.error('Erro ao verificar o status do jogo:', error);
+      });
+  }
+
+  // Definir um intervalo de tempo para a verificação periódica do status do jogo
+  const intervalo = setInterval(verificarStatusJogo, 5000); // 5 segundos (ajuste conforme necessário)
+
 </script>
