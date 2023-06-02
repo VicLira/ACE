@@ -119,6 +119,24 @@
       .catch(function (error) {
         console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
       });
+
+      fetch(`/jogos/buscarDadosKpi/${idUsuario}`, { cache: 'no-store' })
+      .then(function (response) {
+        if (response.ok) {
+          response.json()
+            .then(function (resposta) {
+              console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+              // Chame a função para plotar o gráfico aqui
+              plotarGraficoBarras(resposta);
+            });
+        } else {
+          console.error('Nenhum dado encontrado ou erro na API');
+        }
+      })
+      .catch(function (error) {
+        console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+      });
   }
 
   
@@ -202,6 +220,44 @@
     new Chart(chartElement, config);
   }
 
+  function plotarKpi(resposta) {
+    console.log('Iniciando plotagem do gráfico...');
+
+    // Criando arrays para os labels e dados
+    const labels = [];
+    const dados = [];
+
+    // Preenchendo os arrays com os dados recebidos
+    resposta.forEach(function (registro) {
+      labels.push(registro.nomeJogo);
+      dados.push(registro.qtdCurtida);
+    });
+
+    console.log('Valores para plotagem do gráfico:');
+    console.log('Labels:', labels);
+    console.log('Dados:', dados);
+
+    // Renderizar o gráfico usando a biblioteca Chart.js
+    const config = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Curtidas',
+            data: dados,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+            tension: 0.1
+          }
+        ]
+      }
+    };
+
+    const chartElement = document.getElementById('barChart');
+    new Chart(chartElement, config);
+  }
   
 
 </script>
