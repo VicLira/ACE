@@ -14,7 +14,64 @@ function salvar(Jogo) {
     return database.executar(instrucao);
 }
 
+function buscarCurtidasPorMes(idUsuario, limite_linhas) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `SELECT  
+                YEAR(jogo.dtCriacao) AS ano,
+		        MONTH(jogo.dtCriacao) AS mes,
+                SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+			ON idColaborador = fkColaborador
+				WHERE idColaborador = ${idUsuario} GROUP BY ano, mes
+					LIMIT ${limite_linhas} desc; `;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `SELECT YEAR(jogo.dtCriacao) AS ano,
+		MONTHNAME(jogo.dtCriacao) AS mes,
+        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+			ON idColaborador = fkColaborador
+				WHERE idColaborador = 1 GROUP BY ano, mes ORDER BY ano, mes DESC
+					LIMIT 7;`;
+    } else {
+        console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
+        return
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarCurtidasPorJogo(idUsuario, limite_linhas) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `SELECT 
+        jogo.nome as nomeJogo,
+        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+                ON idColaborador = fkColaborador
+                    WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
+                        LIMIT 7;`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `SELECT 
+        jogo.nome as nomeJogo,
+        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+                ON idColaborador = fkColaborador
+                    WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
+                        LIMIT 7;`;
+    } else {
+        console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
+        return
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     salvar,
+    buscarCurtidasPorMes,
+    buscarCurtidasPorJogo,
     // listar,
 };

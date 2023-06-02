@@ -8,7 +8,7 @@
 
   <title>ACE | Simulador</title>
 
-  <script src="./js/funcoes.js"></script>
+  <script src="../js/funcoes.js"></script>
 
   <link rel="stylesheet" href="./perfil.css">
 
@@ -50,14 +50,14 @@
       <div class="col">
         <div class="row">
           <div class="chart">
-            <canvas id="mixedChart"></canvas>
+            <canvas id="lineChart"></canvas>
 
           </div>
         </div>
 
         <div class="row">
           <div class="chart">
-            <canvas id="lineChart"></canvas>
+            <canvas id="barChart"></canvas>
           </div>
           <div class="col interaction" style="margin: 0;">
             <div class="nInteraction">
@@ -77,86 +77,131 @@
 </html>
 
 <script>
+  validarSessao(2);
 
-  // Dados do gráfico Mixed
-  var data = {
-    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'],
-    datasets: [
-      {
-        type: 'bar',
-        label: 'Vendas',
-        data: [50, 75, 80, 65, 70],
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de preenchimento das barras
-        borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda das barras
-        borderWidth: 1
-      },
-      {
-        type: 'line',
-        label: 'Receita',
-        data: [100, 125, 110, 135, 120],
-        fill: false,
-        borderColor: 'rgba(192, 75, 192, 1)', // Cor da linha
-        borderWidth: 2
+  // Chamada inicial para obter os dados e plotar o gráfico
+  window.onload = obterDadosEPlotarGrafico(sessionStorage.ID_USUARIO);
+
+  // Função para obter os dados do servidor e plotar o gráfico
+  function obterDadosEPlotarGrafico(idUsuario) {
+    fetch(`/jogos/buscarCurtidasPorMes/${idUsuario}`, { cache: 'no-store' })
+      .then(function (response) {
+        if (response.ok) {
+          response.json()
+            .then(function (resposta) {
+              console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+              // Chame a função para plotar o gráfico aqui
+              plotarGraficoLinhas(resposta);
+            });
+        } else {
+          console.error('Nenhum dado encontrado ou erro na API');
+        }
+      })
+      .catch(function (error) {
+        console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+      });
+
+      fetch(`/jogos/buscarCurtidasPorJogo/${idUsuario}`, { cache: 'no-store' })
+      .then(function (response) {
+        if (response.ok) {
+          response.json()
+            .then(function (resposta) {
+              console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+              // Chame a função para plotar o gráfico aqui
+              plotarGraficoBarras(resposta);
+            });
+        } else {
+          console.error('Nenhum dado encontrado ou erro na API');
+        }
+      })
+      .catch(function (error) {
+        console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+      });
+  }
+
+  
+
+  // Função para plotar o gráfico de linhas
+  function plotarGraficoLinhas(resposta) {
+    console.log('Iniciando plotagem do gráfico...');
+
+    // Criando arrays para os labels e dados
+    const labels = [];
+    const dados = [];
+
+    // Preenchendo os arrays com os dados recebidos
+    resposta.forEach(function (registro) {
+      labels.push(registro.mes);
+      dados.push(registro.qtdCurtida);
+    });
+
+    console.log('Valores para plotagem do gráfico:');
+    console.log('Labels:', labels);
+    console.log('Dados:', dados);
+
+    // Renderizar o gráfico usando a biblioteca Chart.js
+    const config = {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Curtidas',
+            data: dados,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }
+        ]
       }
-    ]
-  };
+    };
 
-  // Configurações do gráfico Mixed
-  var options = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true
+    const chartElement = document.getElementById('lineChart');
+    new Chart(chartElement, config);
+  }
+
+  // Função para plotar o gráfico de linhas
+  function plotarGraficoBarras(resposta) {
+    console.log('Iniciando plotagem do gráfico...');
+
+    // Criando arrays para os labels e dados
+    const labels = [];
+    const dados = [];
+
+    // Preenchendo os arrays com os dados recebidos
+    resposta.forEach(function (registro) {
+      labels.push(registro.nomeJogo);
+      dados.push(registro.qtdCurtida);
+    });
+
+    console.log('Valores para plotagem do gráfico:');
+    console.log('Labels:', labels);
+    console.log('Dados:', dados);
+
+    // Renderizar o gráfico usando a biblioteca Chart.js
+    const config = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Curtidas',
+            data: dados,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+            tension: 0.1
+          }
+        ]
       }
-    }
-  };
+    };
 
-  // Renderizar o gráfico Mixed
-  var mixedChart = document.getElementById('mixedChart').getContext('2d');
-  new Chart(mixedChart, {
-    type: 'bar',
-    data: data,
-    options: options
-  });
+    const chartElement = document.getElementById('barChart');
+    new Chart(chartElement, config);
+  }
 
-  // Dados do gráfico line
-  var data = {
-    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'],
-    datasets: [
-      {
-        type: 'line',
-        label: 'Vendas',
-        data: [50, 75, 80, 65, 70],
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de preenchimento das lineras
-        borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda das lineras
-        borderWidth: 1
-      },
-      {
-        type: 'line',
-        label: 'Receita',
-        data: [100, 125, 110, 135, 120],
-        fill: false,
-        borderColor: 'rgba(192, 75, 192, 1)', // Cor da linha
-        borderWidth: 2
-      }
-    ]
-  };
+  
 
-  // Configurações do gráfico Line
-  var options = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  };
-
-  // Renderizar o gráfico Line
-  var lineChart = document.getElementById('lineChart').getContext('2d');
-  new Chart(lineChart, {
-    type: 'line',
-    data: data,
-    options: options
-  });
 </script>

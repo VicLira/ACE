@@ -12,7 +12,15 @@ router.post('/enviar', upload.single('bannerJogo'), (req, res) => {
   jogoController.enviar(req, res);
 });
 
-router.get('/:id', upload.single('bannerJogo'), (req, res) => {
+router.get('/buscarCurtidasPorMes/:idUsuario', (req, res) => {
+  jogoController.buscarCurtidasPorMes(req, res);
+});
+
+router.get('/buscarCurtidasPorJogo/:idUsuario', (req, res) => {
+  jogoController.buscarCurtidasPorJogo(req, res);
+});
+
+router.get('/:id', (req, res) => {
   jogoController.buscarJogoPeloId(req, res);
 });
 

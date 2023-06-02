@@ -15,6 +15,42 @@ function enviar(req, res) {
   });
 }
 
+function buscarCurtidasPorMes(req, res) {
+  const idUsuario = req.params.idUsuario;
+  const limite_linhas = 7;
+  
+
+  jogoModel.buscarCurtidasPorMes(idUsuario, limite_linhas).then(function (resultado) {
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum resultado encontrado!")
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar ultimos dados dos jogos.", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function buscarCurtidasPorJogo(req, res) {
+  const idUsuario = req.params.idUsuario;
+  const limite_linhas = 7;
+  
+
+  jogoModel.buscarCurtidasPorJogo(idUsuario, limite_linhas).then(function (resultado) {
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum resultado encontrado!")
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar ultimos dados dos jogos.", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
 function buscarJogoPeloId(req, res) {
   console.log(req.params.id);
   jogoModel.buscarJogoPeloId(req.params.id)
@@ -25,4 +61,4 @@ function buscarJogoPeloId(req, res) {
   });
 }
 
-module.exports = { enviar, buscarJogoPeloId }
+module.exports = { enviar, buscarJogoPeloId, buscarCurtidasPorMes, buscarCurtidasPorJogo }
