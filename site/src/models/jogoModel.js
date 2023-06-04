@@ -20,16 +20,17 @@ function buscarCurtidasPorMes(idUsuario, limite_linhas) {
 
     if (process.env.AMBIENTE_PROCESSO == "producao") {
         instrucaoSql = `SELECT  
-                YEAR(jogo.dtCriacao) AS ano,
-		        MONTH(jogo.dtCriacao) AS mes,
-                SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+                YEAR(Jogo.dtCriacao) AS ano,
+		        MONTH(Jogo.dtCriacao) AS mes,
+                SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
 			ON idColaborador = fkColaborador
 				WHERE idColaborador = ${idUsuario} GROUP BY ano, mes
 					LIMIT ${limite_linhas} desc; `;
     } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
-        instrucaoSql = `SELECT YEAR(jogo.dtCriacao) AS ano,
-		MONTHNAME(jogo.dtCriacao) AS mes,
-        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+        instrucaoSql = `SELECT 
+        YEAR(Jogo.dtCriacao) AS ano,
+		MONTHNAME(Jogo.dtCriacao) AS mes,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
 			ON idColaborador = fkColaborador
 				WHERE idColaborador = 1 GROUP BY ano, mes ORDER BY ano, mes DESC
 					LIMIT 7;`;
@@ -48,15 +49,15 @@ function buscarCurtidasPorJogo(idUsuario, limite_linhas) {
 
     if (process.env.AMBIENTE_PROCESSO == "producao") {
         instrucaoSql = `SELECT 
-        jogo.nome as nomeJogo,
-        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+        Jogo.nome as nomeJogo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
                 ON idColaborador = fkColaborador
                     WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
                         LIMIT 7;`;
     } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
         instrucaoSql = `SELECT 
-        jogo.nome as nomeJogo,
-        SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
+        Jogo.nome as nomeJogo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
                 ON idColaborador = fkColaborador
                     WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
                         LIMIT 7;`;

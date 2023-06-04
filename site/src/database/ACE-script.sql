@@ -1,21 +1,17 @@
+DROP DATABASE ACE;
 CREATE DATABASE ACE;
 USE ACE;
 
 CREATE TABLE Noticia(
 	idNoticia INT PRIMARY KEY auto_increment,
-    dtNoticia DATE,
+    dtNoticia DATETIME,
     titulo VARCHAR(45),
     descNoticia TEXT,
-    banner LONGTEXT
+    bannerJogo TEXT,
+    bannerNoticia TEXT
 );
 
-ALTER TABLE Noticia MODIFY COLUMN dtNoticia DATETIME;
-
 INSERT INTO Noticia (titulo, descNoticia, dtNoticia, bannerJogo, bannerNoticia) VALUES ('TituloNoticia', 'DescNoticia', now(), '86315d5be8dd83fbc2556508b746aa0076d03b7a45228a4bdf5256b5bf93320dea8ae90535680ca410712eb1e880da07ca116c2e44f391a270bd690ea02ca23d.png', '7c462c4a37c74c15d43cef868af2d7caa34c5f227939df98579230926215772204ff6c2d0ca671c9b0be77d642e5f410182b1421e09b70ff970fea4d81a2d642.png');
-
-ALTER TABLE Noticia RENAME COLUMN banner TO bannerNoticia;
-ALTER TABLE Noticia MODIFY COLUMN bannerNoticia TEXT;
-ALTER TABLE Noticia ADD COLUMN bannerJogo TEXT;
 
 CREATE TABLE TipoUsuario (
 	idTipoUsuario INT PRIMARY KEY auto_increment,
@@ -40,18 +36,6 @@ CREATE TABLE Usuario (
 			REFERENCES TipoUsuario(idTipoUsuario)
 );
 
-SELECT * FROM Usuario;
-SELECT * FROM Noticia;
-SELECT * FROM NoticiaUsuario;
-SELECT * FROM Colaborador;
-SELECT * FROM Jogo;
-
-INSERT INTO Usuario VALUES
-	(null, null, 'pedro', 'teste@teste.com', 'teste', '2000-01-01', '11981231223', 2);
-    
-INSERT INTO Colaborador VALUES
-	(null, 3);
-
 CREATE TABLE NoticiaUsuario (
 	fkUsuario INT,
 		CONSTRAINT fkUsuario FOREIGN KEY (fkUsuario) 
@@ -74,7 +58,7 @@ CREATE TABLE Jogo (
     nome VARCHAR(45),
     descJogo TEXT,
     banner LONGTEXT,
-    dtCriacao DATE,
+    dtCriacao DATETIME,
     statusJogo TINYINT,
 		CONSTRAINT chkStatusJogo CHECK(statusJogo IN(0, 1)),
     tamanhoJogo INT,
@@ -85,8 +69,19 @@ CREATE TABLE Jogo (
 			REFERENCES Colaborador(idColaborador)
 );
 
-ALTER TABLE Jogo MODIFY COLUMN dtCriacao DATETIME;
+SELECT * FROM TipoUsuario;
+INSERT INTO TipoUsuario (idTipoUsuario, tipoDesc) VALUES	
+	(1, 'admin'),
+	(2, 'user');
 
+SELECT * FROM Usuario;
+INSERT INTO Usuario (imgUser, nome, email, senha, dtNasc, telefone, fkTipoUsuario) VALUES
+	(null, 'Victor Lira', 'admin@admin.com', 'admin', '2005-02-14', '11981001289', 1);
+    
+SELECT * FROM Colaborador;
+INSERT INTO Colaborador (idColaborador, fkUsuario) VALUES
+	(1, 1);
+  
 INSERT INTO Jogo (nome, descJogo, banner, dtCriacao, statusJogo, tamanhoJogo, qtdCurtida, qtdSalvo, fkColaborador) VALUES ('perigoJogo', 'perigoDescJogo', 'f4134428de63690e4307869731ab7df126e18e9c154bbc927f6c20f6e25b01180a8ffb193310c09832f1b4f9d403147338fa7a1485b7252b9323f06457a8f5da.png', now(), 0, 123, 92, 5, 1);
 
 CREATE TABLE CategoriaJogo (
@@ -135,5 +130,14 @@ SELECT
 	
 UPDATE jogo SET qtdCurtida = 100 WHERE idJogo = 1;
 		
+SELECT * FROM Usuario;
+SELECT * FROM Noticia;
+SELECT * FROM NoticiaUsuario;
+SELECT * FROM Colaborador;
+SELECT * FROM Jogo;
 
-DROP DATABASE ACE;
+INSERT INTO Usuario VALUES
+	(null, null, 'pedro', 'teste@teste.com', 'teste', '2000-01-01', '11981231223', 2);
+    
+INSERT INTO Colaborador VALUES
+	(null, 3);

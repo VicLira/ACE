@@ -24,17 +24,18 @@
 
     #perfil .container .col {
         z-index: 2;
-        margin-top: 10%;        
+        margin-top: 50px;        
         
     }
 
     #perfil .container .col:nth-child(2) {
-        width: 80%;
+        width: 100%;
         align-items: center;
     }
 
     #perfil .container .col:nth-child(2) .row {
-        width: 90%;
+        width: 80%;
+        max-width: 700px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
@@ -43,7 +44,7 @@
 
     #perfil .container .col:nth-child(2) .row:nth-child(2) .col.interaction {
         max-width: 30%;
-        gap: 50px;
+        gap: 25px;
         justify-content: space-between;
     }   
 
@@ -62,7 +63,7 @@
 .chart {
     width: 100%;
     height: max-content;
-    max-height: 400px;
+    max-height: 300px;
     border-radius: 20px;
     padding: 20px;
     margin: 5px;
