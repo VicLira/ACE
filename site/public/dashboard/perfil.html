@@ -61,10 +61,10 @@
           </div>
           <div class="col interaction" style="margin: 0;">
             <div class="nInteraction">
-              <h2 class="secondary-title">N curtidas</h2>
+              <h2 class="secondary-title" id="nCurtidas">N curtidas</h2>
             </div>
             <div class="nInteraction">
-              <h2 class="secondary-title">N salvos</h2>
+              <h2 class="secondary-title" id="nSalvos">N salvos</h2>
             </div>
           </div>
 
@@ -82,8 +82,7 @@
   // Chamada inicial para obter os dados e plotar o gráfico
   window.onload = obterDadosEPlotarGrafico(sessionStorage.ID_USUARIO);
 
-  // Função para obter os dados do servidor e plotar o gráfico
-  function obterDadosEPlotarGrafico(idUsuario) {
+  function buscarCurtidasPorMes(idUsuario) {
     fetch(`/jogos/buscarCurtidasPorMes/${idUsuario}`, { cache: 'no-store' })
       .then(function (response) {
         if (response.ok) {
@@ -101,8 +100,10 @@
       .catch(function (error) {
         console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
       });
+  }
 
-      fetch(`/jogos/buscarCurtidasPorJogo/${idUsuario}`, { cache: 'no-store' })
+  function buscarCurtidasPorJogo(idUsuario) {
+    fetch(`/jogos/buscarCurtidasPorJogo/${idUsuario}`, { cache: 'no-store' })
       .then(function (response) {
         if (response.ok) {
           response.json()
@@ -119,8 +120,10 @@
       .catch(function (error) {
         console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
       });
+  }
 
-      fetch(`/jogos/buscarDadosKpi/${idUsuario}`, { cache: 'no-store' })
+  function buscarDadosKPI(idUsuario) {
+    fetch(`/jogos/buscarDadosKpi/${idUsuario}`, { cache: 'no-store' })
       .then(function (response) {
         if (response.ok) {
           response.json()
@@ -128,7 +131,7 @@
               console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
               // Chame a função para plotar o gráfico aqui
-              plotarGraficoBarras(resposta);
+              plotarKpi(resposta);
             });
         } else {
           console.error('Nenhum dado encontrado ou erro na API');
@@ -137,6 +140,13 @@
       .catch(function (error) {
         console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
       });
+  }
+
+  // Função para obter os dados do servidor e plotar o gráfico
+  function obterDadosEPlotarGrafico(idUsuario) {
+    buscarCurtidasPorMes(idUsuario)
+    buscarCurtidasPorJogo(idUsuario)
+    buscarDadosKPI(idUsuario);
   }
 
   
@@ -173,6 +183,13 @@
             tension: 0.1
           }
         ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
       }
     };
 
@@ -221,42 +238,15 @@
   }
 
   function plotarKpi(resposta) {
-    console.log('Iniciando plotagem do gráfico...');
-
-    // Criando arrays para os labels e dados
-    const labels = [];
-    const dados = [];
+    console.log('Iniciando plotagem do KPI...');
+    var nCurtidas = document.getElementById('nCurtidas');
+    var nSalvos = document.getElementById('nSalvos');
 
     // Preenchendo os arrays com os dados recebidos
     resposta.forEach(function (registro) {
-      labels.push(registro.nomeJogo);
-      dados.push(registro.qtdCurtida);
+      nCurtidas.innerHTML = `${registro.qtdCurtidas} Curtidas`;
+      nSalvos.innerHTML = `${registro.qtdSalvos} Salvos`;
     });
-
-    console.log('Valores para plotagem do gráfico:');
-    console.log('Labels:', labels);
-    console.log('Dados:', dados);
-
-    // Renderizar o gráfico usando a biblioteca Chart.js
-    const config = {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Curtidas',
-            data: dados,
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.8)',
-            tension: 0.1
-          }
-        ]
-      }
-    };
-
-    const chartElement = document.getElementById('barChart');
-    new Chart(chartElement, config);
   }
   
 

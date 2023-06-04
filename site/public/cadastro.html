@@ -25,7 +25,7 @@
     <Section class="auth-wrapper">
         <div class="col">
             <div class="container">
-                
+
                 <div class="row">
                     <div class="btn-voltar">
                         <a href="./index.html">
@@ -37,7 +37,7 @@
                         <a href="./login.html" class="switch-btn">Login</a>
                     </div>
                 </div>
-                
+
 
                 <div class="form">
                     <div class="field">
@@ -55,22 +55,22 @@
 
                     <div class="row">
                         <div class="field">
-                        
+
                             <input id="telefone_input" type="text" placeholder="11999999999">
                         </div>
                         <div class="field">
                             <input id="dtNasc_input" type="date">
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <button onclick="cadastrar()" class="secondary-btn">Cadastrar</button>
-                <div id="div_aguardar" class="loading-div">
+                <div id="div_aguardar" class="loading-div disable">
                     <img src="./assets/circle-loading.gif" id="loading-gif">
                 </div>
 
-                <div id="div_erros_login"></div>
+                <div id="div_erros_auth"></div>
             </div>
         </div>
         <div class="col bg">
@@ -78,8 +78,10 @@
         </div>
     </Section>
 
-    <div class="alerta_erro">
+    <div class="alerta_erro disable" id="alerta_erro">
         <div class="card_erro" id="cardErro">
+            <img src="./assets/icon/botao-x.png" alt="" class="icone_erro disable" id="icone_erro">
+            <img src="./assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
             <span id="mensagem_erro"></span>
         </div>
     </div>
@@ -92,8 +94,6 @@
     function cadastrar() {
         aguardar();
 
-        //Recupere o valor da nova input pelo nome do id
-        // Agora vá para o método fetch logo abaixo
         var nomeVar = nome_input.value;
         var emailVar = email_input.value;
         var senhaVar = senha_input.value;
@@ -101,66 +101,76 @@
         var telefoneVar = telefone_input.value;
         var dtNascVar = dtNasc_input.value;
 
-
-        if (nomeVar == "" ||
+        if (
+            nomeVar == "" ||
             emailVar == "" ||
             senhaVar == "" ||
             confirmacaoSenhaVar == "" ||
             telefoneVar == "" ||
-            dtNascVar == "") {
-            cardErro.style.display = "block"
-            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            dtNascVar == ""
+        ) {
+            alerta_erro.classList.remove('disable');
+            icone_erro.classList.remove('disable');
+            setTimeout(() => switchMessage(1), 5000);
+            mensagem_erro.innerHTML = "Por favor, preencha todos os campos!";
 
             finalizarAguardar();
             return false;
-        }
-        else {
-            setInterval(sumirMensagem, 5000)
+        } else {
+            setTimeout(function () {
+                switchMessage(0);
+            }, 5000);
         }
 
-        // Enviando o valor da nova input
         fetch("/usuarios/cadastrar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                // crie um atributo que recebe o valor recuperado aqui
-                // Agora vá para o arquivo routes/usuario.js
                 nomeServer: nomeVar,
                 emailServer: emailVar,
                 senhaServer: senhaVar,
                 telefoneServer: telefoneVar,
                 dtNascServer: dtNascVar
             })
-        }).then(function (resposta) {
-
-            console.log("resposta: ", resposta);
-
-            if (resposta.ok) {
-                cardErro.style.display = "block";
-
-                mensagem_erro.innerHTML = "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-                setTimeout(() => {
-                    window.location = "login.html";
-                }, "2000")
-
-                limparFormulario();
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+                if (resposta.ok) {
+                    alerta_erro.classList.remove('disable');
+                    icone_check.classList.remove('disable');
+                    setTimeout(() => switchMessage(0), 5000);
+                    
+                    mensagem_erro.innerHTML =
+                        "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+                    setTimeout(function () {
+                        window.location = "login.html";
+                    }, 2000);
+                    limparFormulario();
+                    finalizarAguardar();
+                } else {
+                    throw new Error("Houve um erro ao tentar realizar o cadastro!");
+                }
+            })
+            .catch(function (resposta) {
+                console.log("#ERRO: ", resposta);
                 finalizarAguardar();
-            } else {
-                throw ("Houve um erro ao tentar realizar o cadastro!");
-            }
-        }).catch(function (resposta) {
-            console.log(`#ERRO: ${resposta}`);
-            finalizarAguardar();
-        });
+            });
 
         return false;
     }
 
-    function sumirMensagem() {
-        cardErro.style.display = "none"
+    function switchMessage(isError) {
+        alerta_erro.classList.add("disable");
+
+
+        if (isError === 1) {
+            icone_erro.classList.add("disable");
+        } else if (isError === 0) {
+            icone_check.classList.add("disable");
+        }
     }
+
 
 </script>

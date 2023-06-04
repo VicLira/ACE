@@ -46,7 +46,7 @@
                 </div>
 
                 <button onclick="entrar()" class="secondary-btn">Entrar</button>
-                <div id="div_aguardar" class="loading-div">
+                <div id="div_aguardar" class="loading-div disable">
                     <img src="./assets/circle-loading.gif" id="loading-gif">
                 </div>
 
@@ -55,8 +55,10 @@
         </div>
     </Section>
 
-    <div class="alerta_erro">
+    <div class="alerta_erro disable" id="alerta_erro">
         <div class="card_erro" id="cardErro">
+            <img src="./assets/icon/botao-x.png" alt="" class="icone_erro disable" id="icone_erro">
+            <img src="./assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
             <span id="mensagem_erro"></span>
         </div>
     </div>
@@ -75,13 +77,18 @@
         var senhaVar = senha_input.value;
 
         if (emailVar == "" || senhaVar == "") {
-            cardErro.style.display = "block"
-            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            alerta_erro.classList.remove('disable');
+            icone_erro.classList.remove('disable');
+            setTimeout(() => switchMessage(1), 5000);
+            mensagem_erro.innerHTML = "Por favor, preencha todos os campos!";
+
             finalizarAguardar();
             return false;
         }
         else {
-            setInterval(sumirMensagem, 5000)
+            setTimeout(function () {
+                switchMessage(0);
+            }, 5000);
         }
 
         console.log("FORM LOGIN: ", emailVar);
@@ -101,6 +108,17 @@
 
             if (resposta.ok) {
                 console.log(resposta);
+                alerta_erro.classList.remove('disable');
+                icone_check.classList.remove('disable');
+
+                setTimeout(() => switchMessage(0), 5000);
+                    
+                mensagem_erro.innerHTML =
+                    "Login realizado com sucesso!";
+
+                setTimeout(function () {
+                    window.location = "login.html";
+                }, 2000);
 
                 resposta.json().then(json => {
                     console.log(json);
@@ -134,8 +152,15 @@
         return false;
     }
 
-    function sumirMensagem() {
-        cardErro.style.display = "none"
+    function switchMessage(isError) {
+        alerta_erro.classList.add("disable");
+
+
+        if (isError === 1) {
+            icone_erro.classList.add("disable");
+        } else if (isError === 0) {
+            icone_check.classList.add("disable");
+        }
     }
 
 </script>

@@ -19,23 +19,23 @@
 
     #perfil .container {
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-around;
     }
 
     #perfil .container .col {
         z-index: 2;
-        margin-top: 50px;        
+        margin-top: 10%;        
         
     }
 
     #perfil .container .col:nth-child(2) {
-        width: 100%;
+        width: 70%;
         align-items: center;
     }
 
     #perfil .container .col:nth-child(2) .row {
-        width: 80%;
-        max-width: 700px;
+        width: 100%;
+        max-width: 800px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
@@ -44,15 +44,15 @@
 
     #perfil .container .col:nth-child(2) .row:nth-child(2) .col.interaction {
         max-width: 30%;
-        gap: 25px;
+        gap: 50px;
         justify-content: space-between;
     }   
 
     .perfil {
         display: flex;
         flex-direction: column;
-        width: 180px;
-        height: 180px;
+        width: 120px;
+        height: 120px;
     }
 
     .perfil .secondary-title {
@@ -72,6 +72,10 @@
     justify-content: space-around;
     background-color: #d9d9d9;
 }
+
+    #lineChart, #barChart {
+        width: 90%;
+    }
 
     .nInteraction {
         width: 100%;

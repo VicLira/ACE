@@ -32,7 +32,7 @@ function buscarCurtidasPorMes(idUsuario, limite_linhas) {
 		MONTHNAME(Jogo.dtCriacao) AS mes,
         SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
 			ON idColaborador = fkColaborador
-				WHERE idColaborador = 1 GROUP BY ano, mes ORDER BY ano, mes DESC
+				WHERE idColaborador = ${idUsuario} GROUP BY ano, mes ORDER BY ano, mes DESC
 					LIMIT 7;`;
     } else {
         console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
@@ -53,14 +53,39 @@ function buscarCurtidasPorJogo(idUsuario, limite_linhas) {
         SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
                 ON idColaborador = fkColaborador
                     WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
-                        LIMIT 7;`;
+                        LIMIT ${limite_linhas};`;
     } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
         instrucaoSql = `SELECT 
         Jogo.nome as nomeJogo,
         SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
                 ON idColaborador = fkColaborador
                     WHERE idColaborador = ${idUsuario} GROUP BY nomeJogo ORDER BY qtdCurtida DESC
-                        LIMIT 7;`;
+                        LIMIT ${limite_linhas};`;
+    } else {
+        console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
+        return
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarDadosKpi(idUsuario, limite_linhas) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `SELECT 
+        SUM(Jogo.qtdCurtida) as qtdCurtidas,
+        SUM(Jogo.qtdSalvo) as qtdSalvos FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+                    WHERE idColaborador = ${idUsuario} LIMIT ${limite_linhas};`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `SELECT 
+        SUM(Jogo.qtdCurtida) as qtdCurtidas,
+        SUM(Jogo.qtdSalvo) as qtdSalvos FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+                    WHERE idColaborador = ${idUsuario} LIMIT ${limite_linhas};`;
     } else {
         console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
         return
@@ -74,5 +99,6 @@ module.exports = {
     salvar,
     buscarCurtidasPorMes,
     buscarCurtidasPorJogo,
+    buscarDadosKpi,
     // listar,
 };

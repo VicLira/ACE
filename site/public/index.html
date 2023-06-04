@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACE - Aliance of Create Effort</title>
 
+    <script src="./js/funcoes.js"></script>
+
     <link rel="stylesheet" href="./css/geral.css">
     <link rel="stylesheet" href="./css/home.css">
     <link rel="stylesheet" href="./css/games-carousel.css">
@@ -56,7 +58,7 @@
     <aside>
         <div class="sidebar">
             <div class="container">
-                <ul class="side-nav">
+                <ul class="side-nav" id="sideNav">
                     <li class="side-item">
                         
                         <a href="#" class="side-link">
@@ -273,3 +275,19 @@
 </body>
 
 </html>
+
+<script>
+    window.onload = carregarFuncoesUsuario();
+
+    function carregarFuncoesUsuario() {
+        logoutItem = `<li class="side-item" onclick="limparSessao()">
+                        <a class="side-link">
+                            <i class="fa-solid fa-door-open"></i>
+                            sair
+                        </a>
+                        
+                    </li>`;
+
+        sideNav.innerHTML += sessionStorage.length > 0 ? logoutItem : ``;
+    }
+</script>
