@@ -12,6 +12,8 @@
   <link rel="icon" href="../assets/icon/favicon2.ico">
   <link rel="stylesheet" href="../css/navigations.css">
   <link rel="stylesheet" href="../css/geral.css">
+  <link rel="stylesheet" href="../css/auth.css">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 
@@ -62,17 +64,31 @@
           </div>
 
           <button class="secondary-btn" onclick="enviar()">Enviar</button>
+          <div id="div_aguardar" class="loading-div disable">
+            <img src="../assets/circle-loading.gif" id="loading-gif">
+          </div>
+
+          <div id="div_erros_auth"></div>
         </div>
 
       </div>
     </div>
   </section>
+
+  <div class="alerta_erro disable" id="alerta_erro">
+    <div class="card_erro" id="cardErro">
+      <img src="../assets/icon/botao-x.png" alt="" class="icone_erro disable" id="icone_erro">
+      <img src=".,/assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
+      <span id="mensagem_erro"></span>
+    </div>
+  </div>
 </body>
 
 </html>
 
 <script>
   validarSessao(2)
+
 
   var bannerJogo = document.getElementById('bannerJogo');
   var bannerJogoLabel = document.getElementById('bannerJogoLabel');
@@ -95,14 +111,35 @@
     }
   });
 
-  var bannerJogoFileVar = bannerJogo.files[0];
-  var nomeJogoVar = nomeJogo.value;
-  var descJogoVar = descJogo.value;
-  var tamanhoJogoVar = tamanhoJogo.value;
-  var categoriaJogoVar = categoriaJogo.value;
-  var idUsuarioVar = sessionStorage.ID_USUARIO;
+
 
   function enviar() {
+    var bannerJogoFileVar = bannerJogo.files[0];
+    var nomeJogoVar = nomeJogo.value;
+    var descJogoVar = descJogo.value;
+    var tamanhoJogoVar = tamanhoJogo.value;
+    var categoriaJogoVar = categoriaJogo.value;
+    var idUsuarioVar = sessionStorage.ID_USUARIO;
+
+    if (bannerJogoFileVar == "" || 
+        nomeJogoVar == "" ||
+        descJogoVar == "" ||
+        tamanhoJogoVar == "" ||
+        categoriaJogoVar == "") {
+      alerta_erro.classList.remove('disable');
+      icone_erro.classList.remove('disable');
+      setTimeout(() => switchMessage(1), 5000);
+      mensagem_erro.innerHTML = "Por favor, preencha todos os campos!";
+
+      finalizarAguardar();
+      return false;
+    }
+    else {
+      setTimeout(function () {
+        switchMessage(0);
+      }, 5000);
+    }
+
     const formData = new FormData();
     formData.append('bannerJogo', bannerJogoFileVar)
     formData.append('nomeJogo', nomeJogoVar)
@@ -118,88 +155,116 @@
       body: formData
     })
       .then(res => {
-        buscarJogo();
-        window.location = "../aprovacao.html"
+        console.log("resposta: ", res);
+        if (res.ok) {
+          alerta_erro.classList.remove('disable');
+          icone_check.classList.remove('disable');
+          setTimeout(() => switchMessage(0), 5000);
+
+          mensagem_erro.innerHTML =
+            "Jogo cadastrado com sucesso! Redirecionando para dashboard...";
+          setTimeout(function () {
+            window.location = "../dashboard/perfil.html";
+          }, 2000);
+
+          limparFormulario();
+          finalizarAguardar();
+        } else {
+          throw new Error("Houve um erro ao tentar realizar o cadastro do jogo!");
+        }
+        // buscarJogo();
+        // window.location = "../aprovacao.html"
       })
       .catch(err => {
         console.log(err);
       })
   }
 
-  function buscarJogo() {
-        aguardar();
+  // function buscarJogo() {
+  //       aguardar();
 
-        fetch("/jogos/buscar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                emailServer: emailVar,
-                senhaServer: senhaVar
-            })
-        }).then(function (resposta) {
-            console.log("ESTOU NO THEN DO entrar()!")
+  //       fetch("/jogos/buscar", {
+  //           method: "POST",
+  //           headers: {
+  //               "Content-Type": "application/json"
+  //           },
+  //           body: JSON.stringify({
+  //               emailServer: emailVar,
+  //               senhaServer: senhaVar
+  //           })
+  //       }).then(function (resposta) {
+  //           console.log("ESTOU NO THEN DO entrar()!")
 
-            if (resposta.ok) {
-                console.log(resposta);
+  //           if (resposta.ok) {
+  //               console.log(resposta);
 
-                resposta.json().then(json => {
-                    console.log(json);
-                    console.log(JSON.stringify(json));
+  //               resposta.json().then(json => {
+  //                   console.log(json);
+  //                   console.log(JSON.stringify(json));
 
-                    sessionStorage.EMAIL_USUARIO = json.email;
-                    sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.ID_USUARIO = json.idUsuario;
-                    sessionStorage.TIPO_USUARIO = json.fkTipoUsuario;
+  //                   sessionStorage.EMAIL_USUARIO = json.email;
+  //                   sessionStorage.NOME_USUARIO = json.nome;
+  //                   sessionStorage.ID_USUARIO = json.idUsuario;
+  //                   sessionStorage.TIPO_USUARIO = json.fkTipoUsuario;
 
-                    setTimeout(function () {
-                        window.location = "./dashboard/perfil.html";
-                    }, 1000); // apenas para exibir o loading
+  //                   setTimeout(function () {
+  //                       window.location = "./dashboard/perfil.html";
+  //                   }, 1000); // apenas para exibir o loading
 
-                });
+  //               });
 
-            } else {
+  //           } else {
 
-                console.log("Houve um erro ao tentar realizar o login!");
+  //               console.log("Houve um erro ao tentar realizar o login!");
 
-                resposta.text().then(texto => {
-                    console.error(texto);
-                    finalizarAguardar(texto);
-                });
-            }
+  //               resposta.text().then(texto => {
+  //                   console.error(texto);
+  //                   finalizarAguardar(texto);
+  //               });
+  //           }
 
-        }).catch(function (erro) {
-            console.log(erro);
-        })
+  //       }).catch(function (erro) {
+  //           console.log(erro);
+  //       })
 
-        return false;
+  //       return false;
+  //   }
+
+  // function verificarStatusJogo() {
+  //   // Fazer uma solicitação AJAX para obter o status do jogo
+  //   // Você pode usar a função fetch() ou outras bibliotecas como o axios
+  //   fetch('/status-jogo/id=')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       // Verificar o status do jogo retornado pela resposta
+  //       const status = data.status;
+
+  //       // Atualizar a interface do usuário com base no status do jogo
+  //       if (status === 'approved') {
+  //         // Atualizar a tela para refletir o jogo aprovado
+  //         // Por exemplo, mostrar uma mensagem ou atualizar a lista de jogos
+  //       } else {
+  //         // O jogo ainda está em espera, você pode não fazer nada ou atualizar a tela de acordo
+  //       }
+  //     })
+  //     .catch(error => {
+  //       // Lidar com erros, se houver
+  //       console.error('Erro ao verificar o status do jogo:', error);
+  //     });
+  // }
+
+  // // Definir um intervalo de tempo para a verificação periódica do status do jogo
+  // const intervalo = setInterval(verificarStatusJogo, 5000); // 5 segundos (ajuste conforme necessário)
+
+  function switchMessage(isError) {
+    alerta_erro.classList.add("disable");
+
+
+    if (isError === 1) {
+      icone_erro.classList.add("disable");
+    } else if (isError === 0) {
+      icone_check.classList.add("disable");
     }
-
-  function verificarStatusJogo() {
-    // Fazer uma solicitação AJAX para obter o status do jogo
-    // Você pode usar a função fetch() ou outras bibliotecas como o axios
-    fetch('/status-jogo/id=')
-      .then(response => response.json())
-      .then(data => {
-        // Verificar o status do jogo retornado pela resposta
-        const status = data.status;
-
-        // Atualizar a interface do usuário com base no status do jogo
-        if (status === 'approved') {
-          // Atualizar a tela para refletir o jogo aprovado
-          // Por exemplo, mostrar uma mensagem ou atualizar a lista de jogos
-        } else {
-          // O jogo ainda está em espera, você pode não fazer nada ou atualizar a tela de acordo
-        }
-      })
-      .catch(error => {
-        // Lidar com erros, se houver
-        console.error('Erro ao verificar o status do jogo:', error);
-      });
   }
-
-  // Definir um intervalo de tempo para a verificação periódica do status do jogo
-  const intervalo = setInterval(verificarStatusJogo, 5000); // 5 segundos (ajuste conforme necessário)
 
 </script>

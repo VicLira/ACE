@@ -1,6 +1,7 @@
 #gamers {
     width: 100%;
     height: 50vh;
+    max-height: 350px;
     background-color: #292929;
 }
 
@@ -15,6 +16,7 @@
         flex-direction: column;
         align-items: center;
         text-transform: uppercase;
+        gap: 10px;
     }
 
 #gamers .character {

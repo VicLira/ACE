@@ -20,6 +20,10 @@ router.get('/buscarCurtidasPorJogo/:idUsuario', (req, res) => {
   jogoController.buscarCurtidasPorJogo(req, res);
 });
 
+router.get('/buscarJogosMaisFamosos/:qtdLinhasVar', (req, res) => {
+  jogoController.buscarJogosMaisFamosos(req, res);
+});
+
 router.get('/buscarDadosKpi/:idUsuario', (req, res) => {
   jogoController.buscarDadosKpi(req, res);
 });

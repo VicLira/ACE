@@ -60,3 +60,15 @@ function fecharModal() {
     divModal.style.display = "none";
 }
 
+function carregarFuncoesUsuario() {
+        logoutItem = `<li class="side-item" onclick="limparSessao()">
+                        <a class="side-link">
+                            <i class="fa-solid fa-door-open"></i>
+                            sair
+                        </a>
+                        
+                    </li>`;
+
+        sideNav.innerHTML += sessionStorage.length > 0 ? logoutItem : ``;
+    }
+

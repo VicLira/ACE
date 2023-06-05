@@ -60,40 +60,33 @@
             <div class="container">
                 <ul class="side-nav" id="sideNav">
                     <li class="side-item">
-                        
+
                         <a href="#" class="side-link">
                             <i class="fa-solid fa-house-chimney"></i>
                             home
                         </a>
-                        
+
                     </li>
                     <li class="side-item">
                         <a href="#" class="side-link">
-                            <i class="fa-solid fa-briefcase"></i>
-                            bag
+                          <i class="fa-solid fa-user"></i>
+                            perfil
                         </a>
-                        
+          
                     </li>
                     <li class="side-item">
-                        <a href="#" class="side-link">
+                        <a href="./postJogo/index.html" class="side-link">
                             <i class="fa-solid fa-gamepad"></i>
-                            jogos
+                            Adicionar jogo
                         </a>
-                        
+
                     </li>
                     <li class="side-item">
-                        <a href="#" class="side-link">
+                        <a href="./postNoticia/index.html" class="side-link">
                             <i class="fa-solid fa-newspaper"></i>
-                            noticias
+                            Adicionar noticia
                         </a>
-                        
-                    </li>
-                    <li class="side-item">
-                        <a href="#" class="side-link">
-                            <i class="fa-brands fa-discord"></i>
-                            discord
-                        </a>
-                        
+
                     </li>
                 </ul>
             </div>
@@ -120,8 +113,8 @@
                 <button class="primary-btn">Ver todos</button>
             </div>
 
-            <div class="carousel">
-                <div class="carousel-item">
+            <div class="carousel" id="carousel">
+                <!-- <div class="carousel-item">
                     <div class="gradient-overlay"></div>
                     <img class="game-bg" src="./assets/jogo-1.png" alt="">
 
@@ -157,15 +150,15 @@
                         <span class="legend">1000 curtidas</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <img class="character" src="./assets/celeste.png" alt="">
-        </div>
+                <img class="character" src="./assets/celeste.png" alt="">
+            </div>
     </section>
 
     <section id="gamers">
-        <div class="container">
-            <div class="gamer">
+        <div class="container" id="containerGamers">
+            <!-- <div class="gamer">
                 <img src="./assets/user-img-default.png" alt="">
                 <span class="legend">Gamer</span>
             </div>
@@ -184,7 +177,7 @@
             <div class="gamer">
                 <img src="./assets/user-img-default.png" alt="">
                 <span class="legend">Gamer</span>
-            </div>
+            </div> -->
 
             <img class="character" src="./assets/cavaleiro.png" alt="">
         </div>
@@ -277,17 +270,126 @@
 </html>
 
 <script>
-    window.onload = carregarFuncoesUsuario();
+    window.onload = () => {
+        carregarFuncoesUsuario();
+        obterDadosEPlotar();
+    };
 
-    function carregarFuncoesUsuario() {
-        logoutItem = `<li class="side-item" onclick="limparSessao()">
-                        <a class="side-link">
-                            <i class="fa-solid fa-door-open"></i>
-                            sair
-                        </a>
-                        
-                    </li>`;
+    function buscarJogosMaisFamosos(qtdLinhasVar) {
+        fetch(`/jogos/buscarJogosMaisFamosos/${qtdLinhasVar}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-        sideNav.innerHTML += sessionStorage.length > 0 ? logoutItem : ``;
+                        // Chame a função para plotar o gráfico aqui
+                        plotarFeed(resposta);
+                    });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+            });
     }
+
+    function buscarUsuarios(qtdLinhasVar) {
+        fetch(`/usuarios/buscarUsuarios/${qtdLinhasVar}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        // Chame a função para plotar o gráfico aqui
+                        plotarUsuarios(resposta);
+                    });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+            });
+    }
+
+
+    // Função para obter os dados do servidor e plotar o gráfico
+    function obterDadosEPlotar() {
+        buscarJogosMaisFamosos(4);
+        buscarUsuarios(5);
+    }
+
+
+    // Função para plotar o gráfico de linhas
+    function plotarFeed(resposta) {
+        // Preenchendo os arrays com os dados recebidos
+    carousel.innerHTML += resposta.map(function (registro) {
+        const imagemJogo = registro.banner ? registro.banner : 'game-default.png';
+        const qtdCurtida = registro.qtdCurtida ? registro.qtdCurtida : 0;
+
+        return `<div class="carousel-item" data-id="${registro.idJogo}">
+            
+            <div class="game-bg-wrapper">
+                <img class="game-bg" src="./assets/jogosImgs/${imagemJogo}" alt="">
+                <div class="gradient-overlay"></div>
+            </div>
+            
+
+            <div class="likes">
+                <i class="fa-solid fa-fire"></i>
+                <div class="col"> 
+                    <div class="row"> 
+                        <span class="legend">${registro.nomeJogo}</span>
+                    </div>
+
+                    <div class="row"> 
+                        
+                        <span class="legend">${qtdCurtida} Curtidas</span>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+        // Adiciona um evento de clique aos elementos do carousel
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        carouselItems.forEach(function (item) {
+            item.addEventListener('click', function () {
+            // Obtenha o ID do jogo a partir do atributo "data-id"
+            const jogoId = item.getAttribute('data-id');
+
+            // Armazene o ID do jogo na sessionStorage
+            sessionStorage.setItem('jogoId', jogoId);
+
+            // Redirecione para a página de detalhes do jogo
+            window.location = './detalhesJogo';
+            });
+        });
+    }
+
+    // Função para plotar o gráfico de linhas
+    function plotarUsuarios(resposta) {
+        // Preenchendo os arrays com os dados recebidos
+        containerGamers.innerHTML += resposta.map(function (registro) {
+        const imgUser = registro.imgUser ? registro.imgUser : 'user-img-default.png';
+
+            return `<div class="gamer">
+                    <img src="./assets/ftPerfil/${imgUser}" alt="">
+                    <span class="legend">${registro.nome}</span>
+                </div>`;
+            }).join('');
+        }
+
+
 </script>

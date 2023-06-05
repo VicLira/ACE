@@ -12,6 +12,8 @@
   <link rel="icon" href="../assets/icon/favicon2.ico">
   <link rel="stylesheet" href="../css/navigations.css">
   <link rel="stylesheet" href="../css/geral.css">
+  <link rel="stylesheet" href="../css/auth.css">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 
@@ -63,11 +65,24 @@
                 </div>
                 
                 <button class="secondary-btn" onclick="enviar()">Enviar</button>
+                <div id="div_aguardar" class="loading-div disable">
+                  <img src="./assets/circle-loading.gif" id="loading-gif">
+                </div>
+
+              <div id="div_erros_auth"></div>
             </div>
             
         </div>
     </div>
   </section>
+
+  <div class="alerta_erro disable" id="alerta_erro">
+    <div class="card_erro" id="cardErro">
+        <img src="./assets/icon/botao-x.png" alt="" class="icone_erro disable" id="icone_erro">
+        <img src="./assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
+        <span id="mensagem_erro"></span>
+    </div>
+  </div>
 </body>
 
 </html>

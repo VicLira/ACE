@@ -22,15 +22,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
   <aside>
     <div class="sidebar">
       <div class="container">
-        <div class="side-nav">
-          <div class="side-item"></div>
-        </div>
+        <ul class="side-nav" id="sideNav">
+          <li class="side-item">
+
+              <a href="../index.html" class="side-link">
+                  <i class="fa-solid fa-house-chimney"></i>
+                  home
+              </a>
+
+          </li>
+          <li class="side-item">
+              <a href="#" class="side-link">
+                <i class="fa-solid fa-user"></i>
+                  perfil
+              </a>
+
+          </li>
+          <li class="side-item">
+            <a href="../postJogo/index.html" class="side-link">
+                <i class="fa-solid fa-gamepad"></i>
+                Adicionar jogo
+            </a>
+
+        </li>
+        <li class="side-item">
+            <a href="../postNoticia/index.html" class="side-link">
+                <i class="fa-solid fa-newspaper"></i>
+                Adicionar noticia
+            </a>
+
+        </li>
+      </ul>
       </div>
     </div>
   </aside>
@@ -42,8 +71,8 @@
     <div class="container">
       <div class="col">
         <div class="perfil">
-          <img src="../assets/user-img-default.png" alt="">
-          <p class="secondary-title">User XPTO</p>
+          <img src="../assets/user-img-default.png" alt="" id="ftUsuario">
+          <p class="secondary-title" id="nomeUsuario"></p>
 
         </div>
       </div>
@@ -80,7 +109,15 @@
   validarSessao(2);
 
   // Chamada inicial para obter os dados e plotar o gráfico
-  window.onload = obterDadosEPlotarGrafico(sessionStorage.ID_USUARIO);
+  window.onload = () => {
+    obterDadosEPlotarGrafico(sessionStorage.ID_USUARIO);
+    carregarInfoUsuario();
+    carregarFuncoesUsuario();
+  };
+
+  function carregarInfoUsuario() {
+    nomeUsuario.innerHTML = sessionStorage.NOME_USUARIO;
+  }
 
   function buscarCurtidasPorMes(idUsuario) {
     fetch(`/jogos/buscarCurtidasPorMes/${idUsuario}`, { cache: 'no-store' })
@@ -242,10 +279,15 @@
     var nCurtidas = document.getElementById('nCurtidas');
     var nSalvos = document.getElementById('nSalvos');
 
+    
+
     // Preenchendo os arrays com os dados recebidos
     resposta.forEach(function (registro) {
-      nCurtidas.innerHTML = `${registro.qtdCurtidas} Curtidas`;
-      nSalvos.innerHTML = `${registro.qtdSalvos} Salvos`;
+      var qtdCurtidas = registro.qtdCurtidas == null ? 0 : registro.qtdCurtidas;
+      var qtdSalvos = registro.qtdSalvos == null ? 0 : registro.qtdSalvos;
+
+      nCurtidas.innerHTML = `${qtdCurtidas} Curtidas`;
+      nSalvos.innerHTML = `${qtdSalvos} Salvos`;
     });
   }
   

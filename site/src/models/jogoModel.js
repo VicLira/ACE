@@ -70,6 +70,41 @@ function buscarCurtidasPorJogo(idUsuario, limite_linhas) {
     return database.executar(instrucaoSql);
 }
 
+function buscarJogosMaisFamosos(limite_linhas) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `SELECT 
+        Jogo.idJogo as idJogo,
+        Jogo.nome as nomeJogo,
+        Jogo.banner as banner,
+         SUM(Jogo.qtdSalvo) as qtdSalvo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+					GROUP BY nomeJogo, banner ORDER BY qtdCurtida DESC
+                        LIMIT ${limite_linhas};`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `SELECT 
+        Jogo.idJogo as idJogo,
+        Jogo.nome as nomeJogo,
+        Jogo.banner as banner,
+         SUM(Jogo.qtdSalvo) as qtdSalvo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+					GROUP BY nomeJogo, banner, idJogo ORDER BY qtdCurtida DESC
+                        LIMIT ${limite_linhas};`;
+    } else {
+        console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
+        return
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+
+
 function buscarDadosKpi(idUsuario, limite_linhas) {
 
     instrucaoSql = ''
@@ -99,6 +134,7 @@ module.exports = {
     salvar,
     buscarCurtidasPorMes,
     buscarCurtidasPorJogo,
+    buscarJogosMaisFamosos,
     buscarDadosKpi,
     // listar,
 };

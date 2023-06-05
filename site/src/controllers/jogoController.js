@@ -51,6 +51,24 @@ function buscarCurtidasPorJogo(req, res) {
     });
 }
 
+function buscarJogosMaisFamosos(req, res) {
+  const limite_linhas = req.params.qtdLinhasVar;
+
+
+  jogoModel.buscarJogosMaisFamosos(limite_linhas).then(function (resultado) {
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum resultado encontrado!")
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar ultimos dados dos jogos.", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+
 function buscarDadosKpi(req, res) {
   const idUsuario = req.params.idUsuario;
   const limite_linhas = 2;
@@ -83,5 +101,6 @@ module.exports = { enviar,
                   buscarJogoPeloId, 
                   buscarCurtidasPorMes, 
                   buscarCurtidasPorJogo,
+                  buscarJogosMaisFamosos,
                   buscarDadosKpi
                  }
