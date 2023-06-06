@@ -14,6 +14,19 @@ function salvar(Jogo) {
     return database.executar(instrucao);
 }
 
+function salvarCategoria(nomeJogo, descJogo, idUsuario, categoriaJogo) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function salvar():", Jogo.nomeJogo, Jogo.descJogo, Jogo.bannerJogo, Jogo.tamanhoJogo);
+    
+    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
+    //  e na ordem de inserção dos dados.
+    var instrucao = `
+        INSERT INTO CategoriaJogo (fkJogo, fkCategoria) VALUES ((SELECT idJogo FROM Jogo WHERE fkColaborador = ${idUsuario} AND nome = ${nomeJogo} AND descJogo = ${descJogo}), ${categoriaJogo});
+    `;
+    
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
 function buscarCurtidasPorMes(idUsuario, limite_linhas) {
 
     instrucaoSql = ''
@@ -171,6 +184,7 @@ function curtirJogo(idUsuario, idJogo, acao) {
 
 module.exports = {
     salvar,
+    salvarCategoria,
     buscarCurtidasPorMes,
     buscarCurtidasPorJogo,
     buscarJogosMaisFamosos,

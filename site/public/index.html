@@ -193,21 +193,21 @@
             </div>
 
             <div class="row">
-                <div class="col">
-                    <div class="primary-new">
+                <div class="col" id="colPrimeiraNoticia">
+                    <!-- <div class="primary-new" id="BannerNoticia">
                         <div class="new-info">
-                            <div class="banner"></div>
+                            <div class="banner" id="BannerJogo"></div>
                             <div class="info-text">
-                                <h3 class="tertiary-title">News title</h3>
-                                <p class="secondary-legend">News legend</p>
+                                <h3 class="tertiary-title" id="TituloNoticia1"></h3>
+                                <p class="secondary-legend" id="TituloDesc1"></p>
                             </div>
 
                         </div>
 
-                    </div>
+                    </div> -->
                 </div>
-                <div class="col">
-                    <div class="secondary-new">
+                <div class="col" id="colSegundaNoticia">
+                    <!-- <div class="secondary-new">
                         <div class="new-info">
                             <div class="banner"></div>
                             <div class="info-text">
@@ -226,7 +226,7 @@
                                 <p class="secondary-legend">News legend</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -323,11 +323,36 @@
             });
     }
 
+    function buscarUltimasNoticias(qtdLinhasVar) {
+        fetch(`/noticias/buscarUltimasNoticias/${qtdLinhasVar}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        // Chame a função para plotar o gráfico aqui
+                        plotarNoticias(resposta);
+                    });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+            });
+    }
+
 
     // Função para obter os dados do servidor e plotar o gráfico
     function obterDadosEPlotar() {
         buscarJogosMaisFamosos(4);
         buscarUsuarios(5);
+        buscarUltimasNoticias(3);
     }
 
 
@@ -390,6 +415,54 @@
                 </div>`;
             }).join('');
         }
+
+     // Função para plotar o gráfico de linhas
+     function plotarNoticias(resposta) {
+  if (resposta.length > 0) {
+    const primeiroRegistro = resposta[0];
+    const imagemNoticia = primeiroRegistro.bannerNoticia ? primeiroRegistro.bannerNoticia : 'news-default.png';
+    const imagemJogo = primeiroRegistro.bannerJogo ? primeiroRegistro.bannerJogo : 'game-default.png';
+
+    colPrimeiraNoticia.innerHTML = `
+      <div class="primary-new" id="BannerNoticia">
+        <img src="./assets/noticiasImgs/${imagemNoticia}" class="banner-noticia">
+        <div class="new-info">
+          <div class="banner" id="BannerJogo">
+            <img src="./assets/noticiasImgs/${imagemJogo}" class="banner-jogo">
+          </div>
+          <div class="info-text">
+            <h3 class="tertiary-title">${primeiroRegistro.titulo}</h3>
+            <p class="secondary-legend">${primeiroRegistro.descNoticia}</p>
+          </div>
+        </div>
+      </div>`;
+
+    colSegundaNoticia.innerHTML = '';
+    for (let i = 1; i < resposta.length; i++) {
+      const registro = resposta[i];
+      const bannerNoticia = registro.bannerNoticia ? registro.bannerNoticia : 'news-default.png';
+      const bannerJogo = registro.bannerJogo ? registro.bannerJogo : 'game-default.png';
+
+      const segundaNoticia = document.createElement('div');
+      segundaNoticia.className = 'secondary-new';
+      segundaNoticia.innerHTML = `
+      <img src="./assets/noticiasImgs/${bannerNoticia}" class="banner-noticia">
+        <div class="new-info">
+          <div class="banner">
+            <img src="./assets/noticiasImgs/${bannerJogo}" class="banner-jogo">
+          </div>
+          <div class="info-text">
+            <h3 class="tertiary-title">${registro.titulo}</h3>
+            <p class="secondary-legend">${registro.descNoticia}</p>
+          </div>
+        </div>`;
+
+      colSegundaNoticia.appendChild(segundaNoticia);
+    }
+  }
+}
+
+
 
 
 </script>

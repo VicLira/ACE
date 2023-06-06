@@ -14,20 +14,51 @@
   <link rel="stylesheet" href="../css/geral.css">
   <link rel="stylesheet" href="../css/auth.css">
 
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="../js/funcoes.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
   <aside>
     <div class="sidebar">
       <div class="container">
-        <div class="side-nav">
-          <div class="side-item"></div>
-        </div>
+        <ul class="side-nav" id="sideNav">
+          <li class="side-item">
+
+              <a href="../index.html" class="side-link">
+                  <i class="fa-solid fa-house-chimney"></i>
+                  home
+              </a>
+
+          </li>
+          <li class="side-item">
+              <a href="./dashboard/perfil.html" class="side-link">
+                <i class="fa-solid fa-user"></i>
+                  perfil
+              </a>
+
+          </li>
+          <li class="side-item">
+              <a href="#" class="side-link">
+                  <i class="fa-solid fa-gamepad"></i>
+                  Adicionar jogo
+              </a>
+
+          </li>
+          <li class="side-item">
+              <a href="./postNoticia/index.html" class="side-link">
+                  <i class="fa-solid fa-newspaper"></i>
+                  Adicionar noticia
+              </a>
+
+          </li>
+      </ul>
       </div>
     </div>
   </aside>
@@ -78,7 +109,7 @@
   <div class="alerta_erro disable" id="alerta_erro">
     <div class="card_erro" id="cardErro">
       <img src="../assets/icon/botao-x.png" alt="" class="icone_erro disable" id="icone_erro">
-      <img src=".,/assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
+      <img src="../assets/icon/check.png" alt="" class="icone_erro disable" id="icone_check">
       <span id="mensagem_erro"></span>
     </div>
   </div>
@@ -87,8 +118,11 @@
 </html>
 
 <script>
-  validarSessao(2)
+  validarSessao(2);
 
+  window.onload = () => {
+    carregarFuncoesUsuario();
+  }
 
   var bannerJogo = document.getElementById('bannerJogo');
   var bannerJogoLabel = document.getElementById('bannerJogoLabel');
@@ -163,6 +197,7 @@
 
           mensagem_erro.innerHTML =
             "Jogo cadastrado com sucesso! Redirecionando para dashboard...";
+
           setTimeout(function () {
             window.location = "../dashboard/perfil.html";
           }, 2000);

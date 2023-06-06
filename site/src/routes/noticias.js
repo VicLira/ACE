@@ -12,6 +12,10 @@ router.post('/enviar', upload.fields([{name: 'bannerNoticia'}, {name: 'bannerJog
   noticiasController.enviar(req, res);
 });
 
+router.get('/buscarUltimasNoticias/:qtdLinhasVar', (req, res) => {
+  noticiasController.buscarUltimasNoticias(req, res);
+});
+
 router.get('/:id', upload.single('bannerJogo'), (req, res) => {
   noticiasController.buscarJogoPeloId(req, res);
 });

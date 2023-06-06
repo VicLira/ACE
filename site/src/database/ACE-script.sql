@@ -1,50 +1,30 @@
-DROP DATABASE ACE;
 CREATE DATABASE ACE;
 USE ACE;
 
-CREATE TABLE Noticia(
-	idNoticia INT PRIMARY KEY auto_increment,
-    dtNoticia DATETIME,
-    titulo VARCHAR(45),
-    descNoticia TEXT,
-    bannerJogo TEXT,
-    bannerNoticia TEXT
-);
-
-INSERT INTO Noticia (titulo, descNoticia, dtNoticia, bannerJogo, bannerNoticia) VALUES ('TituloNoticia', 'DescNoticia', now(), '86315d5be8dd83fbc2556508b746aa0076d03b7a45228a4bdf5256b5bf93320dea8ae90535680ca410712eb1e880da07ca116c2e44f391a270bd690ea02ca23d.png', '7c462c4a37c74c15d43cef868af2d7caa34c5f227939df98579230926215772204ff6c2d0ca671c9b0be77d642e5f410182b1421e09b70ff970fea4d81a2d642.png');
-
 CREATE TABLE TipoUsuario (
-	idTipoUsuario INT PRIMARY KEY auto_increment,
-    tipoDesc VARCHAR(10)
+	idTipoUsuario INT PRIMARY KEY AUTO_INCREMENT,
+	tipoDesc VARCHAR(10)
 );
 
-CREATE TABLE Categoria (
-	idCategoria INT PRIMARY KEY auto_increment,
-    nome VARCHAR(20)
-);
+INSERT INTO TipoUsuario VALUES
+	(1, 'admin'),
+    (2, 'user');
 
 CREATE TABLE Usuario (
-	idUsuario INT PRIMARY KEY auto_increment,
-    imgUser LONGTEXT,
-    nome VARCHAR(45),
-    email VARCHAR(100),
-    senha VARCHAR(45),
-    dtNasc DATE,
-    telefone CHAR(11),
-    fkTipoUsuario INT,
+	idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+	imgUser LONGTEXT,
+	nome VARCHAR(45),
+	email VARCHAR(100),
+	senha VARCHAR(45),
+	dtNasc DATE,
+	telefone CHAR(11),
+	fkTipoUsuario INT,
 		CONSTRAINT fkTipoUsuario FOREIGN KEY (fkTipoUsuario)
 			REFERENCES TipoUsuario(idTipoUsuario)
 );
 
-CREATE TABLE NoticiaUsuario (
-	fkUsuario INT,
-		CONSTRAINT fkUsuario FOREIGN KEY (fkUsuario) 
-			REFERENCES Usuario(idUsuario),
-    fkNoticia INT,
-		CONSTRAINT fkNoticia FOREIGN KEY (fkNoticia)	
-			REFERENCES Noticia(idNoticia),
-	CONSTRAINT pkNoticiaUsuario PRIMARY KEY(fkUsuario, fkNoticia)
-);
+INSERT INTO Usuario VALUES 
+	(null, null, 'Lira', 'admin@admin.com', 'admin', '2005-02-14', '11981001289', 1);
 
 CREATE TABLE Colaborador (
 	idColaborador INT PRIMARY KEY auto_increment,
@@ -52,6 +32,10 @@ CREATE TABLE Colaborador (
 		CONSTRAINT fkUsuarioColaborador FOREIGN KEY (fkUsuario)
 			REFERENCES Usuario(idUsuario)
 );
+
+INSERT INTO Colaborador VALUES
+	(1, 1);
+
 
 CREATE TABLE Jogo (
 	idJogo INT PRIMARY KEY auto_increment,
@@ -69,20 +53,42 @@ CREATE TABLE Jogo (
 			REFERENCES Colaborador(idColaborador)
 );
 
-SELECT * FROM TipoUsuario;
-INSERT INTO TipoUsuario (idTipoUsuario, tipoDesc) VALUES	
-	(1, 'admin'),
-	(2, 'user');
+INSERT INTO Jogo (nome, descJogo, banner, dtCriacao, statusJogo, tamanhoJogo, fkColaborador) VALUES ('WorldBox', 'WorldBox é um Jogo eletrônico de Sandbox foi lançado em 2012 pelo desenvolvedor indie Maxim Karpenko. O jogo usa diferentes elementos para criar, mudar e destruir mundos virtuais.', 'ddbd68435b82ecb3f677ec96b785eaf2be7a57a037759b5c6f604e272a5e2625df035bd6346829ba2bbb7fdeef90dfb47be1ba6fd1721a95fa519343bf16af9c.png', now(), 0, 123, 1);
+SELECT * FROM Jogo;
 
-SELECT * FROM Usuario;
-INSERT INTO Usuario (imgUser, nome, email, senha, dtNasc, telefone, fkTipoUsuario) VALUES
-	(null, 'Victor Lira', 'admin@admin.com', 'admin', '2005-02-14', '11981001289', 1);
-    
-SELECT * FROM Colaborador;
-INSERT INTO Colaborador (idColaborador, fkUsuario) VALUES
-	(1, 1);
-  
-INSERT INTO Jogo (nome, descJogo, banner, dtCriacao, statusJogo, tamanhoJogo, qtdCurtida, qtdSalvo, fkColaborador) VALUES ('perigoJogo', 'perigoDescJogo', 'f4134428de63690e4307869731ab7df126e18e9c154bbc927f6c20f6e25b01180a8ffb193310c09832f1b4f9d403147338fa7a1485b7252b9323f06457a8f5da.png', now(), 0, 123, 92, 5, 1);
+CREATE TABLE Noticia (
+	idNoticia INT PRIMARY KEY AUTO_INCREMENT,
+	dtNoticia DATETIME,
+	titulo VARCHAR(45),
+	descNoticia TEXT,
+	bannerJogo TEXT,
+	bannerNoticia TEXT
+);
+
+CREATE TABLE NoticiaUsuario (
+	fkUsuario INT,
+		CONSTRAINT fkUsuario FOREIGN KEY (fkUsuario) 
+			REFERENCES Usuario(idUsuario),
+	fkNoticia INT,
+		CONSTRAINT fkNoticia FOREIGN KEY (fkNoticia)	
+			REFERENCES Noticia(idNoticia),
+	CONSTRAINT pkNoticiaUsuario PRIMARY KEY(fkUsuario, fkNoticia)
+);
+
+CREATE TABLE Categoria (
+	idCategoria INT PRIMARY KEY AUTO_INCREMENT,
+	nomeCategoria VARCHAR(45)
+);
+
+	INSERT INTO Categoria VALUES 
+		(null, 'Ação'),
+        (null, 'Aventura'),
+        (null, 'Estratégia'),
+        (null, 'Plataforma'),
+        (null, 'Quebra-cabeça'),
+        (null, 'Rpg'),
+        (null, 'Simulação'),
+        (null, 'Terror');
 
 CREATE TABLE CategoriaJogo (
 	fkJogo INT,
@@ -95,22 +101,50 @@ CREATE TABLE CategoriaJogo (
 );
 
 CREATE TABLE Comentario (
-	idComentario INT auto_increment,
-    fkUsuario INT,
-		CONSTRAINT fkComentarioUsuario FOREIGN KEY (fkUsuario)
+	idComentario INT AUTO_INCREMENT,
+	fkUsuario INT,
+		CONSTRAINT fkUsuarioComentario FOREIGN KEY (fkUsuario)
 			REFERENCES Usuario(idUsuario),
 	fkNoticia INT,
-		CONSTRAINT fkComentarioNoticia FOREIGN KEY (fkNoticia)
+		CONSTRAINT fkNoticiaComentario FOREIGN KEY (fkNoticia)
 			REFERENCES Noticia(idNoticia),
 	fkJogo INT,
-		CONSTRAINT fkComentarioJogo FOREIGN KEY (fkJogo)
+		CONSTRAINT fkJogoComentario FOREIGN KEY (fkJogo)
 			REFERENCES Jogo(idJogo),
-	CONSTRAINT pkComentario PRIMARY KEY (idComentario, fkUsuario)
+	conteudo TEXT,
+	dataComentario DATETIME,
+	PRIMARY KEY (idComentario)
 );
 
-USE ACE;
+CREATE TABLE InteracaoUsuarioJogo (
+    idInteracao INT PRIMARY KEY AUTO_INCREMENT,
+    idUsuario INT,
+    idJogo INT,
+    acao VARCHAR(20),
+    dataInteracao DATETIME DEFAULT NOW(),
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario),
+    FOREIGN KEY (idJogo) REFERENCES Jogo(idJogo)
+);
 
-SELECT * FROM usuario WHERE idusuario = 1;
+SELECT * FROM Jogo;
+SELECT * FROM Noticia;
+
+DELIMITER //
+CREATE TRIGGER atualizar_qtdCurtida AFTER INSERT ON Interacao
+FOR EACH ROW
+BEGIN
+    UPDATE Jogo SET qtdCurtida = (SELECT COUNT(*) FROM InteracaoUsuarioJogo WHERE idJogo = NEW.idJogo AND acao = 'curtida') WHERE idJogo = NEW.idJogo;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER atualizar_qtdSalvo AFTER INSERT ON InteracaoUsuarioJogo
+FOR EACH ROW
+BEGIN
+    UPDATE Jogo SET qtdSalvo = (SELECT COUNT(*) FROM InteracaoUsuarioJogo WHERE idJogo = NEW.idJogo AND acao = 'salvo') WHERE idJogo = NEW.idJogo;
+END //
+DELIMITER ;
+
 
 SELECT  YEAR(jogo.dtCriacao) AS ano,
 		MONTHNAME(jogo.dtCriacao) AS mes,
@@ -118,26 +152,42 @@ SELECT  YEAR(jogo.dtCriacao) AS ano,
 			ON idColaborador = fkColaborador
 				WHERE idColaborador = 1 GROUP BY ano, mes ORDER BY ano, mes DESC
 					LIMIT 7; 
-                  
-SELECT * FROM jogo;
+				
 				
 SELECT 
-	jogo.nome as nomeJogo,
-	SUM(jogo.qtdCurtida) as qtdCurtida FROM jogo JOIN colaborador 
-			ON idColaborador = fkColaborador
-				WHERE idColaborador = 1 GROUP BY nomeJogo ORDER BY qtdCurtida DESC
-					LIMIT 7;
-	
-UPDATE jogo SET qtdCurtida = 100 WHERE idJogo = 1;
-		
-SELECT * FROM Usuario;
-SELECT * FROM Noticia;
-SELECT * FROM NoticiaUsuario;
-SELECT * FROM Colaborador;
-SELECT * FROM Jogo;
+        Jogo.nome as nomeJogo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+                    WHERE idColaborador = 2 GROUP BY nomeJogo ORDER BY qtdCurtida DESC
+                        LIMIT 7;
 
-INSERT INTO Usuario VALUES
-	(null, null, 'pedro', 'teste@teste.com', 'teste', '2000-01-01', '11981231223', 2);
+SELECT 
+	SUM(Jogo.qtdCurtida) as qtdCurtida,
+	SUM(Jogo.qtdSalvo) as qtdSalvo FROM Jogo JOIN Colaborador 
+			ON idColaborador = fkColaborador
+				WHERE idColaborador = 1 LIMIT 2;
+
+SELECT 
+        Jogo.nome as nomeJogo,
+        Jogo.banner as banner,
+         SUM(Jogo.qtdSalvo) as qtdSalvo,
+        SUM(Jogo.qtdCurtida) as qtdCurtida FROM Jogo JOIN Colaborador 
+                ON idColaborador = fkColaborador
+					GROUP BY nomeJogo, banner ORDER BY qtdCurtida DESC
+                        LIMIT 4;
+
+SELECT nome,
+	   imgUser FROM Usuario JOIN Colaborador
+	ON idUsuario = fkUsuario ORDER BY idUsuario, fkUsuario LIMIT 5;
     
-INSERT INTO Colaborador VALUES
-	(null, 3);
+SELECT * FROM AtividadeUsuarioJogo WHERE fkUsuario = 1 AND fkJogo = 11 AND tipoAcao = 'curtir';
+    
+SELECT 
+	bannerJogo,
+	bannerNoticia,
+	titulo,
+	descNoticia,
+	dtNoticia FROM Noticia ORDER BY dtNoticia DESC
+					LIMIT 7;
+
+DROP DATABASE ACE;

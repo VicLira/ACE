@@ -14,9 +14,21 @@ function enviar(req, res) {
   
   noticiaModel.salvar(Noticia)
   .then(resultado => {
-    res.status(201).send("Jogo criado com sucesso");
+    res.status(201).send("Notícia criada com sucesso");
   }).catch(err => {
     res.status(500).send(err);
+  });
+}
+
+function buscarUltimasNoticias(req, res) {
+  const limite_linhas = req.params.qtdLinhasVar;
+
+  noticiaModel.buscarUltimasNoticias(limite_linhas)
+  .then(resultado => {
+    res.json(resultado);
+  })
+  .catch(err => {
+    res.status(500).send("Erro ao buscar notícias");
   });
 }
 
@@ -30,4 +42,7 @@ function buscarJogoPeloId(req, res) {
   });
 }
 
-module.exports = { enviar, buscarJogoPeloId }
+module.exports = { enviar,
+    buscarJogoPeloId,
+    buscarUltimasNoticias,
+  }

@@ -4,14 +4,16 @@ const jogoModel = require('../models/jogoModel');
 function enviar(req, res) {
   const bannerJogo = req.file.filename;
 
-  const {nomeJogo, descJogo, tamanhoJogo, categoriaJogo, idUsuario} = req.body
-  const Jogo = { nomeJogo, descJogo, tamanhoJogo, categoriaJogo, bannerJogo, idUsuario }
+  const { nomeJogo, descJogo, tamanhoJogo, categoriaJogo, idUsuario } = req.body;
+  const Jogo = { nomeJogo, descJogo, tamanhoJogo, categoriaJogo, bannerJogo, idUsuario };
   
   jogoModel.salvar(Jogo)
   .then(resultado => {
-    res.status(201).send("Jogo criado com sucesso");
-  }).catch(err => {
-    res.status(500).send(err);
+    res.json(resultado);
+    // return jogoModel.SalvarCategoria(nomeJogo, descJogo, idUsuario, categoriaJogo);
+  })
+  .catch(err => {
+    res.status(500).json(err);
   });
 }
 
