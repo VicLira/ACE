@@ -1,4 +1,21 @@
 #denied-wrapper {
     background-color: #292929;
-    
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+    #denied-wrapper .denied-icon {
+        width: 128px;
+        height: 128px;
+    }
+
+    #denied-wrapper .container {
+        width: 600px;
+        height: 150px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
