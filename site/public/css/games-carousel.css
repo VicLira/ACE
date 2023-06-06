@@ -27,7 +27,7 @@
         background: linear-gradient(0deg, rgba(41,41,41,1) 0%, rgba(41,41,41,0.6530987394957983) 50%, rgba(41,41,41,0) 100%);
     }
 
-    .carousel .carousel-item {
+    .carousel-item {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -58,18 +58,20 @@
         align-items: center;
     }
 
-    #games-carousel i {
+    .carousel-item i {
         color: #fff;
         font-size: 32px;
+        display: flex;
+        align-items: center;
     }
 
-    #games-carousel .game-bg {
+    .carousel-item .game-bg {
         width: 270px;
         height: 400px;
         border-radius: 10px;
         overflow: hidden;
     }
 
-    #games-carousel .game-bg-wrapper {
+    .carousel-item .game-bg-wrapper {
         position: relative;
     }

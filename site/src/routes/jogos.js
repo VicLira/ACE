@@ -28,8 +28,13 @@ router.get('/buscarDadosKpi/:idUsuario', (req, res) => {
   jogoController.buscarDadosKpi(req, res);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/buscarJogoPeloId/:idJogo', (req, res) => {
   jogoController.buscarJogoPeloId(req, res);
 });
+
+router.post('/interacaoJogo', (req, res) => {
+  jogoController.interacaoJogo(req, res);
+});
+
 
 module.exports = router;

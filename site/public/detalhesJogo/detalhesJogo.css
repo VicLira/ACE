@@ -17,3 +17,16 @@
     #game-details .container {
         width: 90%;
     }
+    
+    #game-details .col {
+        margin: 10px;
+    }
+
+    #game-details .row {
+        justify-content: space-between;
+    }
+
+    #game-details .legend {
+        font-size: 18px;
+        text-align: justify;
+    }

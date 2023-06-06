@@ -88,8 +88,9 @@ function buscarDadosKpi(req, res) {
 }
 
 function buscarJogoPeloId(req, res) {
-  console.log(req.params.id);
-  jogoModel.buscarJogoPeloId(req.params.id)
+  const idJogo = req.params.idJogo;
+
+  jogoModel.buscarJogoPeloId(idJogo)
   .then(resultado => {
     res.json(resultado);
   }).catch(err => {
@@ -97,10 +98,53 @@ function buscarJogoPeloId(req, res) {
   });
 }
 
+async function interacaoJogo(req, res) {
+  const idJogo = req.body.idJogoServer;
+  const acao = req.body.acaoServer; // 'curtida' ou 'salvo'
+  const idUsuario = req.body.idUsuarioServer;
+
+  try {
+    if (acao === 'curtida') {
+      await curtirJogo(idUsuario, idJogo);
+    } else if (acao === 'salvo') {
+      await salvarJogo(idUsuario, idJogo);
+    } else {
+      res.status(400).json({ error: 'Ação inválida.' });
+    }
+  } catch (error) {
+    console.error('Erro ao interagir com o jogo:', error);
+    res.status(500).json({ error: 'Erro ao interagir com o jogo.' });
+  }
+}
+
+async function curtirJogo(idUsuario, idJogo) {
+
+  try {
+    // Cria uma nova interação de curtida
+    await jogoModel.curtirJogo(idUsuario, idJogo, 'curtida');
+
+  } catch (error) {
+    console.error('Erro ao curtir o jogo:', error);
+  }
+}
+
+// Função para salvar um jogo
+async function salvarJogo(idUsuario, idJogo) {
+
+  try {
+    // Cria uma nova interação de salvamento
+    await jogoModel.salvarJogo(idUsuario, idJogo, 'salvo');
+  } catch (error) {
+    console.error('Erro ao salvar o jogo:', error);
+  }
+}
+
+
 module.exports = { enviar, 
                   buscarJogoPeloId, 
                   buscarCurtidasPorMes, 
                   buscarCurtidasPorJogo,
                   buscarJogosMaisFamosos,
-                  buscarDadosKpi
+                  buscarDadosKpi,
+                  interacaoJogo
                  }

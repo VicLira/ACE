@@ -103,8 +103,6 @@ function buscarJogosMaisFamosos(limite_linhas) {
     return database.executar(instrucaoSql);
 }
 
-
-
 function buscarDadosKpi(idUsuario, limite_linhas) {
 
     instrucaoSql = ''
@@ -121,14 +119,55 @@ function buscarDadosKpi(idUsuario, limite_linhas) {
         SUM(Jogo.qtdSalvo) as qtdSalvos FROM Jogo JOIN Colaborador 
                 ON idColaborador = fkColaborador
                     WHERE idColaborador = ${idUsuario} LIMIT ${limite_linhas};`;
-    } else {
-        console.log("\nO AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM app.js\n");
-        return
     }
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
+
+function buscarJogoPeloId(idJogo) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `SELECT * FROM Jogo WHERE idJogo = ${idJogo};`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `SELECT * FROM Jogo WHERE idJogo = ${idJogo};`;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function curtirJogo(idUsuario, idJogo, acao) {
+
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `INSERT INTO InteracaoUsuarioJogo (idUsuario, idJogo, acao, dataInteracao) VALUES (${idUsuario}, ${idJogo}, '${acao}', now());`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `INSERT INTO InteracaoUsuarioJogo (idUsuario, idJogo, acao, dataInteracao) VALUES (${idUsuario}, ${idJogo}, '${acao}', now());`;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+
+  }
+  
+ function salvarJogo(idUsuario, idJogo, acao) {
+    instrucaoSql = ''
+
+    if (process.env.AMBIENTE_PROCESSO == "producao") {
+        instrucaoSql = `INSERT INTO InteracaoUsuarioJogo (idUsuario, idJogo, acao, dataInteracao) VALUES (${idUsuario}, ${idJogo}, '${acao}', now());`;
+    } else if (process.env.AMBIENTE_PROCESSO == "desenvolvimento") {
+        instrucaoSql = `INSERT INTO InteracaoUsuarioJogo (idUsuario, idJogo, acao, dataInteracao) VALUES (${idUsuario}, ${idJogo}, '${acao}', now());`;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+  }
+  
+
 
 module.exports = {
     salvar,
@@ -136,5 +175,7 @@ module.exports = {
     buscarCurtidasPorJogo,
     buscarJogosMaisFamosos,
     buscarDadosKpi,
-    // listar,
+    buscarJogoPeloId,
+    curtirJogo,
+    salvarJogo
 };

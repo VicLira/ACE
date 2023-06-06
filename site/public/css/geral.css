@@ -185,6 +185,11 @@
         height: 100%;
     }
 
+.btn-icon {
+    background: none;
+    border: none;
+}
+
 .search-wrapper {
     width: 200px;
     height: 40px;

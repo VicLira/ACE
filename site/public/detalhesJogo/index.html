@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +12,7 @@
 
     <link rel="icon" href="../assets/icon/favicon2.ico">
     <link rel="stylesheet" href="../css/navigations.css">
-
+    <link rel="stylesheet" href="../css/games-carousel.css">
     <link rel="stylesheet" href="../css/geral.css">
 
 
@@ -23,57 +24,187 @@
 
     <title>ACE | Detalhes Jogo</title>
 </head>
+
 <body>
     <section id="game-details-wrapper">
         <aside>
             <div class="sidebar">
-              <div class="container">
-                <ul class="side-nav" id="sideNav">
-                  <li class="side-item">
-        
-                      <a href="../index.html" class="side-link">
-                          <i class="fa-solid fa-house-chimney"></i>
-                          home
-                      </a>
-        
-                  </li>
-                  <li class="side-item">
-                      <a href="#" class="side-link">
-                        <i class="fa-solid fa-user"></i>
-                          perfil
-                      </a>
-        
-                  </li>
-                  <li class="side-item">
-                    <a href="../postJogo/index.html" class="side-link">
-                        <i class="fa-solid fa-gamepad"></i>
-                        Adicionar jogo
-                    </a>
-        
-                </li>
-                <li class="side-item">
-                    <a href="../postNoticia/index.html" class="side-link">
-                        <i class="fa-solid fa-newspaper"></i>
-                        Adicionar noticia
-                    </a>
-        
-                </li>
-              </ul>
-              </div>
+                <div class="container">
+                    <ul class="side-nav" id="sideNav">
+                        <li class="side-item">
+
+                            <a href="../index.html" class="side-link">
+                                <i class="fa-solid fa-house-chimney"></i>
+                                home
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="#" class="side-link">
+                                <i class="fa-solid fa-user"></i>
+                                perfil
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="../postJogo/index.html" class="side-link">
+                                <i class="fa-solid fa-gamepad"></i>
+                                Adicionar jogo
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="../postNoticia/index.html" class="side-link">
+                                <i class="fa-solid fa-newspaper"></i>
+                                Adicionar noticia
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
             </div>
-          </aside>
-        
-          <section id="game-details">
+        </aside>
+
+        <section id="game-details">
             <div class="container">
-                <div class="col"></div>
-                <div class="col"></div>
+                <div class="col" id="gameCol">
+
+                </div>
+                <div class="col">
+                    <h1 class="primary-title" id="nomeJogo"></h1>
+                    <p class="legend" id="descJogo"></p>
+                </div>
             </div>
-          </section>
-            
+        </section>
+
     </section>
 </body>
+
 </html>
 
 <script>
-    
+    window.onload = () => {
+        carregarFuncoesUsuario();
+        obterDadosEPlotar();
+    };
+
+    function buscarJogoPeloId(idJogo) {
+        fetch(`/jogos/buscarJogoPeloId/${idJogo}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        // Chame a função para plotar o gráfico aqui
+                        plotarInfo(resposta);
+                    });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+            });
+    }
+
+    // Função para obter os dados do servidor e plotar o gráfico
+    function obterDadosEPlotar() {
+        buscarJogoPeloId(sessionStorage.ID_JOGO);
+    }
+
+
+    // Função para plotar o gráfico de linhas
+    function plotarInfo(resposta) {
+        // Preenchendo os arrays com os dados recebidos
+        gameCol.innerHTML += resposta.map(function (registro) {
+            const imagemJogo = registro.banner ? registro.banner : 'game-default.png';
+            const qtdSalvo = registro.qtdSalvo ? registro.qtdSalvo : 0;
+            const qtdCurtida = registro.qtdCurtida ? registro.qtdCurtida : 0;
+
+            return `<div class="carousel-item" data-id="${registro.idJogo}">
+            
+            <div class="game-bg-wrapper">
+                <img class="game-bg" src="../assets/jogosImgs/${imagemJogo}" alt="">
+                <div class="gradient-overlay"></div>
+            </div>
+            
+
+            <div class="likes">
+                <i class="fa-solid fa-fire"></i>
+                <div class="col"> 
+                    <div class="row"> 
+                        <span class="legend">${qtdSalvo} Salvos</span>
+                    </div>
+
+                    <div class="row"> 
+                        <span class="legend">${qtdCurtida} Curtidas</span>
+                    </div>
+
+                    <div class="row"> 
+                        <button onclick="curtirJogo(${sessionStorage.ID_JOGO})" class="btn-icon">
+                            <i class="fa-regular fa-heart" id="iconeCurtir"></i>    
+                        </button>
+
+                        <button onclick="salvarJogo(${sessionStorage.ID_JOGO})" class="btn-icon">
+                            <i class="fa-regular fa-bookmark" id="iconeSalvar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        }).join('');
+
+        nomeJogo.innerHTML += resposta.map(function (registro) {
+            return registro.nome
+        }).join('');
+
+        descJogo.innerHTML += resposta.map(function (registro) {
+            return registro.descJogo
+        }).join('');
+
+    }
+
+    function curtirJogo(idJogo) {
+        enviarAcao(idJogo, 'curtida');
+        iconeCurtir.classList.remove('fa-regular');
+        iconeCurtir.classList.add('fa-solid');
+        alert('Jogo foi curtido com sucesso!')
+    }
+
+    function salvarJogo(idJogo) {
+        enviarAcao(idJogo, 'salvo');
+        iconeSalvar.classList.remove('fa-regular');
+        iconeSalvar.classList.add('fa-solid');
+        alert('Jogo foi salvo com sucesso!')
+    }
+
+    function enviarAcao(idJogo, acao) {
+        // Enviar uma requisição para o servidor com o idJogo e a acao
+
+        fetch('/jogos/interacaoJogo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                idUsuarioServer: sessionStorage.ID_USUARIO,
+                idJogoServer: idJogo,
+                acaoServer: acao
+            }),
+        })
+            .then((response) => response.json())
+            .then((res) => {
+                // Atualizar a exibição do botão ou mostrar uma mensagem de sucesso/erro
+                console.log(res.message);
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
+    }
+
 </script>
