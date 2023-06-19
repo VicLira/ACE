@@ -31,34 +31,34 @@
         <ul class="side-nav" id="sideNav">
           <li class="side-item">
 
-              <a href="../index.html" class="side-link">
-                  <i class="fa-solid fa-house-chimney"></i>
-                  home
-              </a>
+            <a href="../index.html" class="side-link">
+              <i class="fa-solid fa-house-chimney"></i>
+              home
+            </a>
 
           </li>
           <li class="side-item">
-              <a href="../dashboard/perfil.html" class="side-link">
-                <i class="fa-solid fa-user"></i>
-                  perfil
-              </a>
+            <a href="../dashboard/perfil.html" class="side-link">
+              <i class="fa-solid fa-user"></i>
+              perfil
+            </a>
 
           </li>
           <li class="side-item">
-              <a href="#" class="side-link">
-                  <i class="fa-solid fa-gamepad"></i>
-                  Adicionar jogo
-              </a>
+            <a href="#" class="side-link">
+              <i class="fa-solid fa-gamepad"></i>
+              Adicionar jogo
+            </a>
 
           </li>
           <li class="side-item">
-              <a href="../postNoticia/index.html" class="side-link">
-                  <i class="fa-solid fa-newspaper"></i>
-                  Adicionar noticia
-              </a>
+            <a href="../postNoticia/index.html" class="side-link">
+              <i class="fa-solid fa-newspaper"></i>
+              Adicionar noticia
+            </a>
 
           </li>
-      </ul>
+        </ul>
       </div>
     </div>
   </aside>
@@ -155,11 +155,11 @@
     var categoriaJogoVar = categoriaJogo.value;
     var idUsuarioVar = sessionStorage.ID_USUARIO;
 
-    if (bannerJogoFileVar == "" || 
-        nomeJogoVar == "" ||
-        descJogoVar == "" ||
-        tamanhoJogoVar == "" ||
-        categoriaJogoVar == "") {
+    if (bannerJogoFileVar == "" ||
+      nomeJogoVar == "" ||
+      descJogoVar == "" ||
+      tamanhoJogoVar == "" ||
+      categoriaJogoVar == "") {
       alerta_erro.classList.remove('disable');
       icone_erro.classList.remove('disable');
       setTimeout(() => switchMessage(1), 5000);
@@ -198,98 +198,51 @@
           mensagem_erro.innerHTML =
             "Jogo cadastrado com sucesso! Redirecionando para dashboard...";
 
-          setTimeout(function () {
-            window.location = "../dashboard/perfil.html";
-          }, 2000);
-
+          listarDados(nomeJogoVar, descJogoVar)
           limparFormulario();
           finalizarAguardar();
         } else {
           throw new Error("Houve um erro ao tentar realizar o cadastro do jogo!");
         }
-        // buscarJogo();
-        // window.location = "../aprovacao.html"
       })
       .catch(err => {
         console.log(err);
       })
   }
 
-  // function buscarJogo() {
-  //       aguardar();
+  function listarDados(nomeJogo, descJogo) {
 
-  //       fetch("/jogos/buscar", {
-  //           method: "POST",
-  //           headers: {
-  //               "Content-Type": "application/json"
-  //           },
-  //           body: JSON.stringify({
-  //               emailServer: emailVar,
-  //               senhaServer: senhaVar
-  //           })
-  //       }).then(function (resposta) {
-  //           console.log("ESTOU NO THEN DO entrar()!")
+    fetch("/jogos/listarDados", {
+      method: "GET",
+      body: JSON.stringify({
+        nomeJogoServer: nomeJogo,
+        descJogoServer: descJogo
+      })
+    })
+      .then(res => {
+        console.log("resposta: ", res);
+        if (res.ok) {
 
-  //           if (resposta.ok) {
-  //               console.log(resposta);
+          resposta.json().then(json => {
+            console.log(json);
+            console.log(JSON.stringify(json));
 
-  //               resposta.json().then(json => {
-  //                   console.log(json);
-  //                   console.log(JSON.stringify(json));
+            sessionStorage.ID_POST_JOGO = json.idJogo;
 
-  //                   sessionStorage.EMAIL_USUARIO = json.email;
-  //                   sessionStorage.NOME_USUARIO = json.nome;
-  //                   sessionStorage.ID_USUARIO = json.idUsuario;
-  //                   sessionStorage.TIPO_USUARIO = json.fkTipoUsuario;
+            setTimeout(function () {
+              window.location = "./dashboard/perfil.html";
+            }, 3000); // apenas para exibir o loading
 
-  //                   setTimeout(function () {
-  //                       window.location = "./dashboard/perfil.html";
-  //                   }, 1000); // apenas para exibir o loading
+          });
 
-  //               });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
-  //           } else {
 
-  //               console.log("Houve um erro ao tentar realizar o login!");
-
-  //               resposta.text().then(texto => {
-  //                   console.error(texto);
-  //                   finalizarAguardar(texto);
-  //               });
-  //           }
-
-  //       }).catch(function (erro) {
-  //           console.log(erro);
-  //       })
-
-  //       return false;
-  //   }
-
-  // function verificarStatusJogo() {
-  //   // Fazer uma solicitação AJAX para obter o status do jogo
-  //   // Você pode usar a função fetch() ou outras bibliotecas como o axios
-  //   fetch('/status-jogo/id=')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       // Verificar o status do jogo retornado pela resposta
-  //       const status = data.status;
-
-  //       // Atualizar a interface do usuário com base no status do jogo
-  //       if (status === 'approved') {
-  //         // Atualizar a tela para refletir o jogo aprovado
-  //         // Por exemplo, mostrar uma mensagem ou atualizar a lista de jogos
-  //       } else {
-  //         // O jogo ainda está em espera, você pode não fazer nada ou atualizar a tela de acordo
-  //       }
-  //     })
-  //     .catch(error => {
-  //       // Lidar com erros, se houver
-  //       console.error('Erro ao verificar o status do jogo:', error);
-  //     });
-  // }
-
-  // // Definir um intervalo de tempo para a verificação periódica do status do jogo
-  // const intervalo = setInterval(verificarStatusJogo, 5000); // 5 segundos (ajuste conforme necessário)
 
   function switchMessage(isError) {
     alerta_erro.classList.add("disable");

@@ -1,12 +1,59 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACE | Esperando Aprovacao</title>
+
+    <link rel="stylesheet" href="css/geral.css">
+    <link rel="stylesheet" href="css/denied.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+
+    <title>ACE | Acesso Negado</title>
 </head>
 <body>
-    <h1>Esperando aprovação</h1>
+    <section id="denied-wrapper">
+        <div class="btn-voltar">
+            <a href="../index.html">
+                <img src="./assets/icon/back-secondary.png" alt="">
+            </a>
+        </div>
+        <div class="container">
+            
+            <img src="./assets/icon/check.png" alt="Ícone de acesso negado" class="denied-icon">
+            <h1 class="primary-title">Esperando aprovação!</h1>
+            <p class="legend">Os administradores irão revisar as informações do jogo</p>
+
+        </div>
+    </section>
 </body>
 </html>
+
+<script>
+    function verificarStatusJogo() {
+    fetch('/status-jogo/id=')
+      .then(response => response.json())
+      .then(data => {
+        // Verificar o status do jogo retornado pela resposta
+        const status = data.status;
+
+        // Atualizar a interface do usuário com base no status do jogo
+        if (status === 'approved') {
+          // Atualizar a tela para refletir o jogo aprovado
+          // Por exemplo, mostrar uma mensagem ou atualizar a lista de jogos
+        } else {
+          // O jogo ainda está em espera, você pode não fazer nada ou atualizar a tela de acordo
+        }
+      })
+      .catch(error => {
+        // Lidar com erros, se houver
+        console.error('Erro ao verificar o status do jogo:', error);
+      });
+  }
+
+  // Definir um intervalo de tempo para a verificação periódica do status do jogo
+  const intervalo = setInterval(verificarStatusJogo, 5000); // 5 segundos (ajuste conforme necessário)
+</script>
