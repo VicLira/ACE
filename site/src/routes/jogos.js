@@ -12,7 +12,7 @@ router.post('/enviar', upload.single('bannerJogo'), (req, res) => {
   jogoController.enviar(req, res);
 });
 
-router.get('/listarDados', (req, res) => {
+router.post('/listarDados', (req, res) => {
   jogoController.listar(req, res);
 });
 

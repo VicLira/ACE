@@ -18,7 +18,10 @@ function enviar(req, res) {
 }
 
 function listar(req, res) {
-  jogoModel.listarDados()
+  const nomeJogo = req.body.nomeJogoServer;
+  const descJogo = req.body.descJogoServer;
+
+  jogoModel.listarDados(nomeJogo, descJogo)
       .then(function (resultado) {
           if (resultado.length > 0) {
               res.status(200).json(resultado);

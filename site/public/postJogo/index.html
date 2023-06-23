@@ -199,7 +199,6 @@
             "Jogo cadastrado com sucesso! Redirecionando para dashboard...";
 
           listarDados(nomeJogoVar, descJogoVar)
-          limparFormulario();
           finalizarAguardar();
         } else {
           throw new Error("Houve um erro ao tentar realizar o cadastro do jogo!");
@@ -212,16 +211,22 @@
 
   function listarDados(nomeJogo, descJogo) {
 
+    var nomeJogoVar = nomeJogo;
+    var descJogoVar = descJogo;
+
     fetch("/jogos/listarDados", {
-      method: "GET",
+      method: "POST",
+      headers: {
+                "Content-Type": "application/json"
+            },
       body: JSON.stringify({
-        nomeJogoServer: nomeJogo,
-        descJogoServer: descJogo
+        nomeJogoServer: nomeJogoVar,
+        descJogoServer: descJogoVar
       })
     })
-      .then(res => {
-        console.log("resposta: ", res);
-        if (res.ok) {
+      .then(resposta => {
+        console.log("resposta: ", resposta);
+        if (resposta.ok) {
 
           resposta.json().then(json => {
             console.log(json);
@@ -230,7 +235,7 @@
             sessionStorage.ID_POST_JOGO = json.idJogo;
 
             setTimeout(function () {
-              window.location = "./dashboard/perfil.html";
+              window.location = "../aprovacao.html";
             }, 3000); // apenas para exibir o loading
 
           });

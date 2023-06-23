@@ -34,7 +34,10 @@
 
 <script>
     function verificarStatusJogo() {
-    fetch('/status-jogo/id=')
+
+      const idJogo = sessionStorage.ID_POST_JOGO;
+
+    fetch(`/jogos/status-jogo/${idJogo}`)
       .then(response => response.json())
       .then(data => {
         // Verificar o status do jogo retornado pela resposta
