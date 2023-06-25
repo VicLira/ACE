@@ -36,6 +36,11 @@ router.get('/buscarJogoPeloId/:idJogo', (req, res) => {
   jogoController.buscarJogoPeloId(req, res);
 });
 
+router.get('/buscarNAprovados', (req, res) => {
+  jogoController.buscarNAprovados(req, res);
+});
+
+
 router.post('/interacaoJogo', (req, res) => {
   jogoController.interacaoJogo(req, res);
 });

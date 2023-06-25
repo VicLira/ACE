@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="../js/funcoes.js"></script>
+
+    <link rel="stylesheet" href="./listaAprovacao.css">
+
+    <link rel="icon" href="../assets/icon/favicon2.ico">
+    <link rel="stylesheet" href="../css/navigations.css">
+    <link rel="stylesheet" href="../css/games-carousel.css">
+    <link rel="stylesheet" href="../css/geral.css">
+
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <title>ACE | Lista de Aprovação</title>
+</head>
+
+<body>
+    <section id="game-details-wrapper">
+        <aside>
+            <div class="sidebar">
+                <div class="container">
+                    <ul class="side-nav" id="sideNav">
+                        <li class="side-item">
+
+                            <a href="../index.html" class="side-link">
+                                <i class="fa-solid fa-house-chimney"></i>
+                                home
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="../dashboard/perfil.html" class="side-link">
+                                <i class="fa-solid fa-user"></i>
+                                perfil
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="../postJogo/index.html" class="side-link">
+                                <i class="fa-solid fa-gamepad"></i>
+                                Adicionar jogo
+                            </a>
+
+                        </li>
+                        <li class="side-item">
+                            <a href="../postNoticia/index.html" class="side-link">
+                                <i class="fa-solid fa-newspaper"></i>
+                                Adicionar noticia
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <section id="game-details">
+            <div class="container">
+                <div class="col" id="gameCol">
+
+                </div>
+                <div class="col" id="gameList">
+
+                </div>
+            </div>
+        </section>
+
+    </section>
+</body>
+
+</html>
+
+<script>
+
+
+    window.onload = () => {
+        carregarFuncoesUsuario();
+        obterDadosEPlotar();
+        validarSessao(1);
+    };
+
+    var dadosJogos = [];
+
+    function buscarJogoPeloId(idJogo) {
+        fetch(`/jogos/buscarNAprovados`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        // Chame a função para plotar o gráfico aqui
+                        plotarInfo(resposta);
+                    });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados para o gráfico: ${error.message}`);
+            });
+    }
+
+    // Função para obter os dados do servidor e plotar o gráfico
+    function obterDadosEPlotar() {
+        buscarJogoPeloId(sessionStorage.ID_JOGO);
+    }
+
+
+    // Função para plotar o gráfico de linhas
+    function plotarInfo(resposta) {
+        // Preenchendo os arrays com os dados recebidos
+        gameList.innerHTML += resposta.map(function (registro) {
+            const imagemJogo = registro.banner ? registro.banner : 'game-default.png';
+            const qtdSalvo = registro.qtdSalvo ? registro.qtdSalvo : 0;
+            const qtdCurtida = registro.qtdCurtida ? registro.qtdCurtida : 0;
+
+            dadosJogos.push({
+                idJogo: registro.idJogo,
+                nomeJogo: registro.nome,
+                descJogo: registro.descJogo,
+                bannerJogo: registro.banner,
+                dtCriacao: registro.dtCriacao,
+                tamanhoJogo: registro.tamanhoJogo,
+                colaboradorJogo: registro.fkColaborador
+            });
+
+            return `<div class="game-list-item" data-id="${registro.idJogo}">
+            
+                <div class="game-bg-wrapper">
+                    <img class="game-bg" src="../assets/jogosImgs/${imagemJogo}" alt="">
+                    <div class="gradient-overlay"></div>
+                </div>
+                
+
+                <div class="col">
+                    <h1 class="primary-title">${adicionarTresPontos(registro.nome, 5)}</h1>
+                    <p class="legend">${adicionarTresPontos(registro.descJogo, 30)}</p>
+
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>`;
+        }).join('');
+
+        const gameListItem = document.querySelectorAll('.game-list-item');
+        gameListItem.forEach(function (item) {
+            item.addEventListener('mouseover', function () {
+                console.log(dadosJogos[item.getAttribute('data-id') - 1])
+                hoverDetails(dadosJogos[item.getAttribute('data-id') - 1])
+
+            });
+        });
+
+        function adicionarTresPontos(texto, numeroMaxPalavras) {
+            // Dividir o texto em palavras
+            var palavras = texto.split(' ');
+
+            // Verificar se o número de palavras é maior que o número máximo permitido
+            if (palavras.length > numeroMaxPalavras) {
+                // Remover palavras adicionais após o número máximo
+                palavras = palavras.slice(0, numeroMaxPalavras);
+
+                // Acrescentar os três pontos ao final do texto truncado
+                texto = palavras.join(' ') + '...';
+            }
+
+            return texto;
+        }
+    }
+
+    function hoverDetails(dadosJogo) {
+        const imagemJogo = dadosJogo.bannerJogo ? dadosJogo.bannerJogo : 'game-default.png';
+        const qtdSalvo = dadosJogo.qtdSalvo ? dadosJogo.qtdSalvo : 0;
+        const qtdCurtida = dadosJogo.qtdCurtida ? dadosJogo.qtdCurtida : 0;
+
+        gameCol.innerHTML =
+            `<div class="detail-item" data-id="${dadosJogo.idJogo}">
+            
+            <div class="game-bg-wrapper">
+                <img class="game-bg" src="../assets/jogosImgs/${imagemJogo}" alt="">
+                <div class="gradient-overlay"></div>
+            </div>
+
+            <div class="col"> 
+                <span class="legend"> ${dadosJogo.dtCriacao}</span>
+                <span class="legend"> ${dadosJogo.tamanhoJogo} MB</span>
+            </div>
+            
+        </div>`;
+
+        const detailItem = document.querySelector('.detail-item');
+        detailItem.addEventListener('click', function () {
+            // Obtenha o ID do jogo a partir do atributo "data-id"
+            const jogoId = detailItem.getAttribute('data-id');
+
+            // Armazene o ID do jogo na sessionStorage
+            sessionStorage.setItem('ID_JOGO', jogoId);
+
+            // Redirecione para a página de detalhes do jogo
+            window.location = '../detalhesJogo';
+        });
+    }
+
+</script>

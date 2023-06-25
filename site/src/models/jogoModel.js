@@ -36,6 +36,15 @@ function listarDados(nomeJogo, descJogo) {
     return database.executar(instrucao);
 }
 
+function buscarNAprovados() {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function buscarNAprovados(): ")
+    var instrucao = `
+        SELECT * FROM jogo WHERE statusJogo = 0;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
 function buscarCurtidasPorMes(idUsuario, limite_linhas) {
 
     instrucaoSql = ''
@@ -201,5 +210,6 @@ module.exports = {
     buscarJogoPeloId,
     curtirJogo,
     salvarJogo,
+    buscarNAprovados,
     listarDados
 };
